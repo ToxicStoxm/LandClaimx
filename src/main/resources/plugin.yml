@@ -5,7 +5,7 @@ api-version: 1.19
 commands:
   claim:
     description: Lets sender claim current chunk.
-    usage: /claim
+    usage:
     aliases: cl
-    permission: claim
+    permission: landclaimx.claim
     permission-message: You do not have permission to execute that command!

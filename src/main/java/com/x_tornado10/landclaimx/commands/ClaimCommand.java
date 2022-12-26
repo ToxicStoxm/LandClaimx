@@ -31,51 +31,174 @@ public class ClaimCommand implements CommandExecutor {
 
             Player player = (Player) sender;
 
-            if (args.length == 0) {
+            if (player.hasPermission("landclaimx.claim")) {
 
+                if (args.length == 0) {
 
-                Chunk chunk = player.getLocation().getChunk();
-
-                String chunkID = chunk.getX() + "," + chunk.getZ();
-
-                if (plugin.isChunk(chunkID)) {
-
-                    sender.sendMessage("This chunk is already claimed!");
-
-                } else {
-
-                    plugin.addChunk(chunkID, player.getUniqueId());
-
-                }
-            } else if (args.length == 1){
-
-                String word = args[0];
-
-                if (word.equals("owner")) {
 
                     Chunk chunk = player.getLocation().getChunk();
 
                     String chunkID = chunk.getX() + "," + chunk.getZ();
 
+                    if (plugin.isChunk(chunkID)) {
 
-                   String owneruuid = plugin.getOwner(chunkID).toString();
+                        if (player.hasPermission("landclaimx.claim.overwrite")) {
 
-                   String ownername = Bukkit.getPlayer(plugin.getOwner(chunkID)).getName().toString();
+                            sender.sendMessage("This chunk is already claimed!" + "\n" + "Type '/claim overwrite' to overwrite the previous claim");
+
+                        } else if (player.hasPermission("landclaimx.claim.owner")){
+
+                            sender.sendMessage("This chunk is already claimed!" + "\n" + "Type '/claim owner' to display the chunk's Owner");
+
+                        }else {
+
+                            sender.sendMessage("This chunk is already claimed!");
+
+                        }
+
+                    } else {
+
+                        plugin.addChunk(chunkID, player.getUniqueId());
+
+                    }
+                } else if (args.length == 1) {
+
+                    String word = args[0];
+
+                    if (word.equals("owner") || word.equals("overwrite") || word.equals("remove")) {
+
+                    } else {
+                        player.sendMessage("You provided invalid arguments! " + "\n" + "Try: /claim <owner,overwrite,remove>");
+                    }
 
 
-                   player.sendMessage("The owner of this chunk is: " + ownername + "   (" + owneruuid + ")");
+                    if (word.equals("owner")) {
+
+
+                        if (player.hasPermission("landclaimx.claim.owner")) {
+
+                            Chunk chunk = player.getLocation().getChunk();
+
+                            String chunkID = chunk.getX() + "," + chunk.getZ();
+
+                            if (plugin.getOwner(chunkID) == null) {
+
+                                player.sendMessage("This Chunk isn't claimed yet!" + "\n" + "Type '/claim' to claim it");
+                                return false;
+
+                            } else {
+
+
+                                String owneruuid = plugin.getOwner(chunkID).toString();
+
+
+                                String ownername = Bukkit.getPlayer(plugin.getOwner(chunkID)).getName().toString();
+
+
+                                player.sendMessage("The owner of this chunk is: " + ownername + "   (" + owneruuid + ")");
+                            }
+
+                        } else {
+
+                            player.sendMessage("You do not have the permissions to execute that command!");
+
+                        }
+
+
+                    }
+
+
+
+
+
+
+
+                    if (word.equals("overwrite")) {
+
+                        if (player.hasPermission("landclaimx.claim.overwrite")) {
+
+                            Chunk chunk = player.getLocation().getChunk();
+
+                            String chunkID = chunk.getX() + "," + chunk.getZ();
+
+                            plugin.addChunk(chunkID, player.getUniqueId());
+
+                            player.sendMessage("overwriting...");
+
+                        } else {
+
+                            player.sendMessage("You do not have the permissions to execute that command!");
+
+                        }
+
+                    }
+
+
+
+
+
+
+
+                    if (word.equals("remove")) {
+
+                        if (player.hasPermission("landclaimx.claim.remove")) {
+
+                            Chunk chunk = player.getLocation().getChunk();
+
+                            String chunkID = chunk.getX() + "," + chunk.getZ();
+
+                            if (plugin.getOwner(chunkID) == null) {
+
+                                player.sendMessage("This Chunk isn't claimed yet!" + "\n" + "Type '/claim' to claim it");
+                                return false;
+
+                            } else {
+
+
+                                if (player.hasPermission("landclaimx.claim.remove.other")) {
+
+                                    plugin.removeChunk(chunkID, player.getUniqueId());
+
+                                } else if (((Player) sender).getUniqueId().equals(plugin.getOwner(chunkID))) {
+
+                                    plugin.removeChunk(chunkID, player.getUniqueId());
+
+                                } else {
+
+                                    player.sendMessage("You can not unclaim chunks, owned by other players!");
+
+                                }
+                            }
+
+
+                        }else {
+
+                            player.sendMessage("You do not have the permissions to execute that command!");
+
+                        }
+
+                    }
+
+
+
+
+
+
+                } else {
+
+                    player.sendMessage("You provided too many arguments!");
 
                 }
 
 
+
             } else {
 
-                player.sendMessage("You provided invalid arguments! Tray again:" + "\n" + "Tray: /claim <owner,overwrite>");
+                player.sendMessage("You do not have the permissions to execute that command!");
 
             }
 
         }
-
 
         return true;
 

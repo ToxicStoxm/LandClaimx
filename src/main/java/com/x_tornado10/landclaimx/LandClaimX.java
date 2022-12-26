@@ -1,15 +1,9 @@
 package com.x_tornado10.landclaimx;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.x_tornado10.landclaimx.commands.ClaimCommand;
-import jdk.jpackage.internal.IOUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -17,10 +11,13 @@ public final class LandClaimX extends JavaPlugin {
 
     private HashMap<String, UUID> chunks;
 
+
     @Override
     public void onEnable() {
         // Plugin startup logic
         Bukkit.getLogger().info("starting up...");
+
+        saveDefaultConfig();
 
         this.chunks = new HashMap<>();
 
@@ -30,6 +27,9 @@ public final class LandClaimX extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+
+
+
         Bukkit.getLogger().info("shutting down...");
     }
 
@@ -50,4 +50,9 @@ public final class LandClaimX extends JavaPlugin {
 
     }
 
+    public void removeChunk(String chunk, UUID owner) {
+
+        chunks.remove(chunk, owner);
+
+    }
 }
