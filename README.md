@@ -1,7 +1,7 @@
 # LandClaimx
 A very simple land claiming plugin for minecraft
 
-Permissions:
+Permissions:  
 landclaimx.*                 Admin Permission  
 landclaimx.claim             claim chunks  
 landclaimx.claim.owner       see current chunk's owner  
