@@ -1,0 +1,11 @@
+name: Landclaimx
+version: '${project.version}'
+main: com.x_tornado10.landclaimx.LandClaimX
+api-version: 1.19
+commands:
+  claim:
+    description: Lets sender claim current chunk.
+    usage: /claim
+    aliases: cl
+    permission: claim
+    permission-message: You do not have permission to execute that command!
