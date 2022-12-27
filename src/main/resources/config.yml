@@ -1,0 +1,5 @@
+Version: "1.1"
+
+Plugin:
+  prefix: "§0§l[§bLandClaimX§0§l]§r "
+  suffix: ""

@@ -1,6 +1,7 @@
 package com.x_tornado10.landclaimx;
 
 import com.x_tornado10.landclaimx.commands.ClaimCommand;
+import com.x_tornado10.landclaimx.commands.ClaimCommandTabCompletion;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -22,6 +23,8 @@ public final class LandClaimX extends JavaPlugin {
         this.chunks = new HashMap<>();
 
         getCommand("claim").setExecutor(new ClaimCommand(this));
+        getCommand("claim").setTabCompleter(new ClaimCommandTabCompletion());
+
     }
 
     @Override
@@ -32,6 +35,14 @@ public final class LandClaimX extends JavaPlugin {
 
         Bukkit.getLogger().info("shutting down...");
     }
+
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_Blue = "\u001B[34m";
+
+    public String prefix = getConfig().getString("Plugin.prefix").toString();
+    public String version = getConfig().getString("Version").toString();
+
+    public String author = "x_Tornado10";
 
     public void addChunk(String chunk, UUID owner) {
 
@@ -55,4 +66,5 @@ public final class LandClaimX extends JavaPlugin {
         chunks.remove(chunk, owner);
 
     }
+
 }
