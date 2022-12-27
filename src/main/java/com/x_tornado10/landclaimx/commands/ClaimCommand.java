@@ -80,10 +80,10 @@ public class ClaimCommand implements CommandExecutor {
 
                     String word = args[0];
 
-                    if (word.equals("owner") || word.equals("overwrite") || word.equals("remove")) {
+                    if (word.equals("owner") || word.equals("overwrite") || word.equals("remove") || word.equals("info") || word.equals("help")) {
 
                     } else {
-                        player.sendMessage(plugin.prefix + "You provided invalid arguments! " + "\n" + "Try: /claim <owner,overwrite,remove>");
+                        player.sendMessage(plugin.prefix + "You provided invalid arguments! " + "\n" + "Try: /claim <owner,overwrite,remove,help,info>");
                     }
 
 
