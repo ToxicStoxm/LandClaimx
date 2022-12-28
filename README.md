@@ -1,7 +1,7 @@
 # LandClaimx
 A very simple land claiming plugin for minecraft
 
-Permissions:  
+## Permissions:  
 landclaimx.*-----------------------------Admin Permission  
 landclaimx.claim-------------------------claim chunks  
 landclaimx.claim.owner-------------------see current chunk's owner  
@@ -10,14 +10,14 @@ landclaimx.claim.remove------------------remove claimed chunks owned by the send
 landclaimx.claim.removeall---------------remove claimed chunks owned by any player
 landclaimx.claim.clear-------------------clear all chunk claims
 
-Configuration:
+## Configuration:
 
-1. LandClaimX\config.yml
+### 1. LandClaimX\config.yml
     Main configuration file
       -Plugin Prefix
       -Console Prefix
 
-2. LandClaimX\claims.yml
+### 2. LandClaimX\claims.yml
     Storage for all saved claims
     DO NOT CHANGE ANYTHING IN THIS FILE UNLESS YOU KNOW WHAT YOU ARE DOING!
     
