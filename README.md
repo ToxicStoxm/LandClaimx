@@ -24,10 +24,10 @@ landclaimx.claim.clear-------------------clear all chunk claims
     
    
 
-# Issues
+## Issues
 
 Please let me know if you find any bug.
 
-# Suggestions
+## Suggestions
 
 I'm making this plugin mostly for private porpouse but if you have any cool suggestions let me know!
