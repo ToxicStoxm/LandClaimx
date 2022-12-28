@@ -1,5 +1,5 @@
-Version: "1.2"
+Version: "1.3"
 
 Plugin:
   prefix: "§0§l[§bLandClaimX§0§l]§r "
-  suffix: ""
+  consoleprefix: "[LandClaimX] "

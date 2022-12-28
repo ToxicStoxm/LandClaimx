@@ -12,7 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
 public class ClaimCommand implements CommandExecutor {
+
 
     private final LandClaimX plugin;
 
@@ -23,6 +25,7 @@ public class ClaimCommand implements CommandExecutor {
 
     @Override
     public  boolean onCommand(CommandSender sender, Command command, String label, String [] args) {
+
 
         String nopermsmessage = plugin.prefix + "You do not have the permissions to execute that command!";
 
@@ -75,15 +78,30 @@ public class ClaimCommand implements CommandExecutor {
                         plugin.addChunk(chunkID, player.getUniqueId());
                         player.sendMessage(plugin.prefix + "Successfully claimed chunk!");
 
+
                     }
                 } else if (args.length == 1) {
 
                     String word = args[0];
 
-                    if (word.equals("owner") || word.equals("overwrite") || word.equals("remove") || word.equals("info") || word.equals("help")) {
+                    if (word.equals("owner") || word.equals("overwrite") || word.equals("remove") || word.equals("info") || word.equals("help") || word.equals("clear")) {
+
+                        if (args.length == 2) {
+
+                            String word2 = args[1];
+
+                            if (word2.equals("confirm")) {
+
+                            } else {
+
+                                player.sendMessage(plugin.prefix + "You provided invalid arguments! " + "\n" + "Type '/claim help' to display the Help Menu");
+
+                            }
+
+                        }
 
                     } else {
-                        player.sendMessage(plugin.prefix + "You provided invalid arguments! " + "\n" + "Try: /claim <owner,overwrite,remove,help,info>");
+                        player.sendMessage(plugin.prefix + "You provided invalid arguments! " + "\n" + "Type '/claim help' to display the Help Menu");
                     }
 
 
@@ -209,7 +227,7 @@ public class ClaimCommand implements CommandExecutor {
 
                     if (word.equals("help")) {
 
-                        String[] helpmenu = new String[7];
+                        String[] helpmenu = new String[9];
 
                         helpmenu[0] = "§b -- /claim --               \n §7Claim the current chunk if it's not been claimed yet§r";
                         helpmenu[1] = "§b -- /claim remove --        \n §7Remove the current chunk from your/any claimed chunks list§r";
@@ -218,15 +236,81 @@ public class ClaimCommand implements CommandExecutor {
                         helpmenu[4] = "§b -- /claim info --          \n §7Displays Author and Version of this Plugin§r";
                         helpmenu[5] = "§b -- /claim help --          \n §7Displays this menu§r";
                         helpmenu[6] = "§7━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
+                        helpmenu[7] = "§b -- /claim clear --         \n §7Clear all claimed chunks§r";
+                        helpmenu[8] = "§b -- /claim clear confirm -- \n §7Confirmation to clear all claimed chunks (/claim clear)§r";
 
-                        player.sendMessage(helpmenu[6] + "\n" + plinfo.replace("["," ").replace("]"," ") + "\n\n" + helpmenu[0] + "\n\n" + helpmenu[1] + "\n\n" + helpmenu[2] + "\n\n" + helpmenu[3] + "\n\n" + helpmenu[4] + "\n\n" + helpmenu[5] + "\n" + helpmenu[6]);
+                        player.sendMessage(helpmenu[6] + "\n" +
+                                plinfo.replace("["," ").replace("]"," ") + "\n\n" +
+
+                                helpmenu[0] + "\n\n" +
+                                helpmenu[1] + "\n\n" +
+                                helpmenu[2] + "\n\n" +
+                                helpmenu[3] + "\n\n" +
+                                helpmenu[4] + "\n\n" +
+                                helpmenu[7] + "\n\n" +
+                                helpmenu[8] + "\n\n" +
+
+                                helpmenu[5] + "\n" +
+                                helpmenu[6]);
 
 
                     }
 
+
+
+                    if (word.equals("clear")) {
+
+                        if (player.hasPermission("landclaimx.claim.clearall")) {
+
+                            player.sendMessage("Are you sure that you want to delete all claimed chunks?\n" + "Type '/claim clearall confirm' to confirm");
+
+                        } else {
+
+                            player.sendMessage(nopermsmessage);
+
+                        }
+
+
+                    }
+
+
+
                 } else {
 
-                    player.sendMessage(plugin.prefix + "You provided too many arguments!");
+                    if (args.length == 2) {
+
+                        String word = args[0];
+                        String word2 = args[1];
+
+                        if (player.hasPermission("landclaimx.claim.clear")) {
+
+                            if (word.equals("clear")) {
+
+                                if (word2.equals("confirm")) {
+
+                                    player.sendMessage(plugin.prefix + "Starting process...");
+
+                                    plugin.clearChunks();
+                                    plugin.clearFile();
+
+                                    player.sendMessage(plugin.prefix + "Process complete!");
+                                    player.sendMessage(plugin.prefix + "Successfully deleted all cleimed chunks");
+
+                                }
+
+                            }
+                        } else {
+
+                            player.sendMessage(nopermsmessage);
+
+                        }
+
+
+                    } else {
+
+                        player.sendMessage(plugin.prefix + "You provided too many arguments!");
+
+                    }
 
                 }
 

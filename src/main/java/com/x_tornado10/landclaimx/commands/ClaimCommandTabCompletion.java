@@ -16,7 +16,10 @@ public class ClaimCommandTabCompletion implements TabCompleter {
 
         if (args.length == 1) {
 
+            String word = args[0];
+
             List<String> claimargs = new ArrayList<>();
+
             if (player.hasPermission("landclaimx.claim.owner")) {
 
                 claimargs.add("owner");
@@ -35,8 +38,35 @@ public class ClaimCommandTabCompletion implements TabCompleter {
 
             }
 
+            if (player.hasPermission("landclaimx.claim.clearall")) {
+
+                claimargs.add("clear");
+
+            }
+
             claimargs.add("info");
             claimargs.add("help");
+
+            return claimargs;
+
+        }
+
+        if (args.length == 2) {
+
+            String word = args[0];
+            String word2 = args[1];
+
+            List<String> claimargs = new ArrayList<>();
+
+            if (player.hasPermission("landclaimx.claim.clear")) {
+
+                if (word.equals("clear")) {
+
+                    claimargs.add("confirm");
+
+                }
+
+            }
 
             return claimargs;
 
