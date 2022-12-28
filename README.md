@@ -12,12 +12,11 @@ landclaimx.claim.clear-------------------clear all chunk claims
 
 ## Configuration:
 
-#### 1. LandClaimX\config.yml
-    Main configuration file
+1. Main configuration file
       -Plugin Prefix
       -Console Prefix
 
-#### 2. LandClaimX\claims.yml
+2. LandClaimX\claims.yml
     Storage for all saved claims
     DO NOT CHANGE ANYTHING IN THIS FILE UNLESS YOU KNOW WHAT YOU ARE DOING!
     
