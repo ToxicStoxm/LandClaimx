@@ -14,7 +14,7 @@ landclaimx.claim.clear-------------------clear all chunk claims
 
 1.LandClaimX\config.yml  
       Main configuration file  
-            -Plugin Prefix
+            -Plugin Prefix  
             -Console Prefix
 
 2. LandClaimX\claims.yml  
