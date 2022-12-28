@@ -1,5 +1,28 @@
-Version: "1.3"
+#############################################
+#                                           #
+#      This is the Configuration file       #
+#        for the LandClaimX plugin          #
+#############################################
 
+#General settings
 Plugin:
+  #Prefix to be displayed in front of every message send by the plugin in the in game chat
+  #for colors use >> &0 : black, &1 : dark_blue, &2 : dark_green, &3 : dark_aqua, &4 : dark_red, &5 : dark_purple, &6 : gold, &7 : gray, &8 : dark_gray, &9 : blue, &a : green, &b : aqua, &c : red, &d : light_purple, &e : yellow, &f : white;
+  #for text formatting use >> &u : underline, &l : bold, &o . italic, &m : strikethrough, &k : obfuscated, &r : reset;
+  #YOU NEED TO PUT &r (reset) AT THE END OR THE MESSAGE ITSELF WILL KEEP THE FORMAT!
+  #Default: "§0§l[§bLandClaimX§0§l]§r "
   prefix: "§0§l[§bLandClaimX§0§l]§r "
+  #Consoleprefix to be desplayed in front of every message send by the plugin in the console log output
+  #You can't use any colours or text formatting in this one
+  #Default: "[LandClaimX] "
   consoleprefix: "[LandClaimX] "
+
+
+
+##########################################
+#                                        #
+#     DO NOT CHANGE ANYTHING SECTION     #
+#                                        #
+##########################################
+
+Version: "1.4"

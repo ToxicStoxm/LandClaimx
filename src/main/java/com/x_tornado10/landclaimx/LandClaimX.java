@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;;
 
-
+//MAIN CLASS
 public final class LandClaimX extends JavaPlugin {
 
     private File claimsFile;
@@ -34,6 +34,7 @@ public final class LandClaimX extends JavaPlugin {
 
         saveDefaultConfig();
 
+        //make File claims.yml if it doesn't already exist
         claimsFile = new File(getDataFolder(), "claims.yml");
 
         if (!claimsFile.exists()) {
@@ -49,7 +50,7 @@ public final class LandClaimX extends JavaPlugin {
             }
 
         }
-
+        //console log
         Bukkit.getLogger().info(consoleprefix + "Loading config.yml...");
         Bukkit.getLogger().info(consoleprefix + "Loaded config.yml");
 
@@ -58,6 +59,7 @@ public final class LandClaimX extends JavaPlugin {
         Bukkit.getLogger().info(consoleprefix + "---------------------------------------------------------------------------------------------");
 
 
+        //triggering  the 'getHashMapFromTextFile' that reads the claims from the claims.yml file and puts them in to the HashMap 'chunks'
         this.chunks = new HashMap<>();
 
         Map<String, UUID> mapFromFile = getHashMapFromTextFile();
@@ -67,6 +69,7 @@ public final class LandClaimX extends JavaPlugin {
             Bukkit.getLogger().info(consoleprefix + "Chunk: "+ entry.getKey() + " <==> " + "Owner: " + Bukkit.getPlayer(entry.getValue()).getName() + " <==> " + "UUID: " + entry.getValue());
 
         }
+        //console log
         Bukkit.getLogger().info(consoleprefix + "---------------------------------------------------------------------------------------------");
         Bukkit.getLogger().info(consoleprefix);
         Bukkit.getLogger().info(consoleprefix + "Loaded claims.yml");
@@ -75,11 +78,13 @@ public final class LandClaimX extends JavaPlugin {
 
 
 
+        //registering command '/claim' and TabCompletion for the '/claim' command
         getCommand("claim").setExecutor(new ClaimCommand(this));
         getCommand("claim").setTabCompleter(new ClaimCommandTabCompletion());
 
     }
 
+    //Function for getting claims from claims.yml and putting them into the HashMap 'chunks'
     public static Map<String, UUID> getHashMapFromTextFile() {
 
         Map<String, UUID> mapFileContents = new HashMap<String, UUID>();
@@ -127,6 +132,8 @@ public final class LandClaimX extends JavaPlugin {
 
         Bukkit.getLogger().info(consoleprefix + "Saving files...");
 
+
+        //writing HashMap 'chunks' to claims.yml
         if (chunks == null) {
 
         } else {
@@ -164,8 +171,10 @@ public final class LandClaimX extends JavaPlugin {
             }
         }
 
+        //triggering save function to save everything before the plugin gets disabled
         save();
 
+        //console log
         Bukkit.getLogger().info(consoleprefix + "Everthing saved!");
 
         Bukkit.getLogger().info(consoleprefix + "Good Bye!");
@@ -173,44 +182,50 @@ public final class LandClaimX extends JavaPlugin {
         Bukkit.getLogger().info(consoleprefix + "shutting down...");
     }
 
-    public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_Blue = "\u001B[34m";
 
+    //plugin information getting stored into strings to be used in messages
     public String prefix = getConfig().getString("Plugin.prefix").toString();
     public String consoleprefix = getConfig().getString("Plugin.consoleprefix").toString();
     public String version = getConfig().getString("Version").toString();
-
     public String author = "x_Tornado10";
 
+
+
+    //function for adding a new chunk to the HashMap chunks. Is triggered by '/claim'
     public void addChunk(String chunk, UUID owner) {
 
         chunks.put(chunk, owner);
 
     }
 
+    //function for checking if the current chunk is already claimed (returns true/false). Also triggered by 'claim'
     public boolean isChunk(String chunk) {
 
         return chunks.containsKey(chunk);
     }
 
+    //function for getting the Owner of the current chunk (returns UUID). Triggered by '/claim owner'
     public UUID getOwner(String chunk) {
 
         return chunks.get(chunk);
 
     }
 
+    //function for removing a Chunk from the HashMap 'chunk' (returns nothing). Triggered by '/claim remove'
     public void removeChunk(String chunk, UUID owner) {
 
         chunks.remove(chunk, owner);
 
     }
 
+    //function for saving the configuration file
     public void save() {
 
             saveConfig();
 
     }
 
+    //function for clearing all entries from the claims.yml file. Triggered by '/claim clear' & '/claim clear confirm'
     public void clearFile() {
 
         try {
@@ -227,6 +242,7 @@ public final class LandClaimX extends JavaPlugin {
 
     }
 
+    //function for clearing the HashMap 'chunks'. Triggered by '/claim clear' & '/claim clear confirm'
     public void clearChunks() {
 
         chunks.clear();

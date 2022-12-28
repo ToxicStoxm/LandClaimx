@@ -6,7 +6,7 @@
 
     <groupId>landclaimx</groupId>
     <artifactId>landclaimx</artifactId>
-    <version>1.3</version>
+    <version>1.4</version>
     <packaging>jar</packaging>
 
     <name>Landclaimx</name>
