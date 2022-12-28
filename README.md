@@ -18,7 +18,7 @@ landclaimx.claim.clear-------------------clear all chunk claims
             -Console Prefix  
 
 2. LandClaimX\claims.yml  
-    Storage for all saved claims
+    Storage for all saved claims  
     DO NOT CHANGE ANYTHING IN THIS FILE UNLESS YOU KNOW WHAT YOU ARE DOING!
     
     
