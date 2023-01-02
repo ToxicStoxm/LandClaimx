@@ -19,16 +19,36 @@ public final class LandClaimX extends JavaPlugin {
 
    private static HashMap<String, UUID> chunks;
 
-   final static String FilePath = ".
+   final static String FilePath = "plugins/LandClaimX/data/claims.yml";
+   public String getOperatingSystem() {
+
+       String os = System.getProperty("os.name");
+       return os;
+
+   }
 
 
     @Override
     public void onEnable() {
 
+
+
         // Plugin startup logic
         Bukkit.getLogger().info(consoleprefix + "Welcome back!");
         Bukkit.getLogger().info(consoleprefix + "Starting up...");
+        Bukkit.getLogger().info(consoleprefix + "Checking for dependencies...");
 
+        if (Bukkit.getPluginManager().getPlugin("dynmap") == null) {
+
+            Bukkit.getLogger().warning(consoleprefix + "Dependencies: Plugin 'dynmap' wasn't found!");
+            Bukkit.getLogger().warning(consoleprefix + "Disabling plugin...");
+            Bukkit.getPluginManager().disablePlugin(this);
+
+        } else {
+
+            Bukkit.getLogger().warning(consoleprefix + "Dependencies: Plugin 'dynmap' was found and validated!");
+
+        }
 
         //writing default config or reloading it if it exists
         saveDefaultConfig();
@@ -36,9 +56,14 @@ public final class LandClaimX extends JavaPlugin {
 
         //console log
         Bukkit.getLogger().info(consoleprefix + "Loading config.yml...");
-        Bukkit.getLogger().info(consoleprefix + "Loaded config.yml");
+        Bukkit.getLogger().info(consoleprefix + "--Prefix: " + prefix);
+        Bukkit.getLogger().info(consoleprefix + "--Console Prefix: " + consoleprefix);
+        Bukkit.getLogger().info(consoleprefix + "--Version: " + version);
+        Bukkit.getLogger().info(consoleprefix + "--Author: " + author);
+        Bukkit.getLogger().info(consoleprefix + "Successfully loaded config.yml");
 
         Bukkit.getLogger().info(consoleprefix + "Loading claims.yml...");
+
         Bukkit.getLogger().info(consoleprefix);
         Bukkit.getLogger().info(consoleprefix + "---------------------------------------------------------------------------------------------");
 
@@ -81,48 +106,7 @@ public final class LandClaimX extends JavaPlugin {
     }
 
 
-    //Function for getting claims from claims.yml and putting them into the HashMap 'chunks'
-    public static Map<String, UUID> getHashMapFromTextFile() {
 
-        Map<String, UUID> mapFileContents = new HashMap<String, UUID>();
-
-        BufferedReader br = null;
-        try {
-
-            File file = new File(FilePath);
-
-            br = new BufferedReader(new FileReader(file));
-
-            String line = null;
-
-            while ((line = br.readLine()) != null) {
-
-                String[] parts = line.split(":");
-
-                String chunkID = parts[0].trim();
-                UUID UUID = java.util.UUID.fromString(parts[1].trim());
-
-                if (!chunkID.equals("") && !UUID.equals("")) {
-                    chunks.put(chunkID, UUID);
-
-                }
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (Exception e) {
-                }
-                ;
-            }
-        }
-
-        return chunks;
-
-    }
     @Override
     public void onDisable() {
         // Plugin shutdown logic
@@ -135,10 +119,21 @@ public final class LandClaimX extends JavaPlugin {
 
         } else {
 
+            File data = new File(getDataFolder(), "data");
+            if (data.mkdirs()) {
+
+                Bukkit.getLogger().info(consoleprefix + "Successfully created Directory LandClaimX/data/");
+
+            }
+
             File file = new File(FilePath);
+            if (file.mkdirs()) {
+
+                Bukkit.getLogger().info(consoleprefix + "Successfully created File LandClaimX/data/claims.yml");
+
+            }
 
             BufferedWriter bf = null;
-            ;
 
             try {
                 bf = new BufferedWriter(new FileWriter(file));
@@ -179,10 +174,56 @@ public final class LandClaimX extends JavaPlugin {
         Bukkit.getLogger().info(consoleprefix + "shutting down...");
     }
 
+    //Function for getting claims from claims.yml and putting them into the HashMap 'chunks'
+    public static Map<String, UUID> getHashMapFromTextFile() {
+
+        Map<String, UUID> mapFileContents = new HashMap<String, UUID>();
+
+        BufferedReader br = null;
+        try {
+
+            File file = new File(FilePath);
+
+
+            br = new BufferedReader(new FileReader(file));
+
+            String line = null;
+
+            while ((line = br.readLine()) != null) {
+
+                String[] parts = line.split(":");
+
+                String chunkID = parts[0].trim();
+                UUID UUID = java.util.UUID.fromString(parts[1].trim());
+
+                if (!chunkID.equals("") && !UUID.equals("")) {
+                    chunks.put(chunkID, UUID);
+
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            errormessage();
+
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (Exception e) {
+                }
+            }
+        }
+
+        return chunks;
+
+    }
+
 
     //plugin information getting stored into strings to be used in messages
     public String prefix = getConfig().getString("Plugin.prefix").toString();
     public String consoleprefix = getConfig().getString("Plugin.consoleprefix").toString();
+
     public String version = getConfig().getString("Version").toString();
     public String author = "x_Tornado10";
 
@@ -253,6 +294,18 @@ public final class LandClaimX extends JavaPlugin {
     public String perms_radius = "landclaimx.claim.radius";
     public String perms_owner = "landclaimx.claim.owner";
     public String perms_overwrite = "landclaimx.claim.overwrite";
+
+    public static String errorprefix = "LandClaimXERROR";
+
+    public static void errormessage() {
+
+
+
+        Bukkit.getLogger().warning(errorprefix + "An ERROR occurred while loading values from 'claims.yml'");
+        Bukkit.getLogger().warning(errorprefix + "This is normal if claims.yml is empty!");
+        Bukkit.getLogger().warning(errorprefix + "Please restart the server or open an Issue on GitHub: https://github.com/ToxicStoxm/LandClaimx/issues");
+
+    }
 
 
 

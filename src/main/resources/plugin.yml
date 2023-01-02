@@ -1,4 +1,4 @@
-name: Landclaimx
+name: LandClaimX
 version: '${project.version}'
 main: com.x_tornado10.landclaimx.LandClaimX
 api-version: 1.19

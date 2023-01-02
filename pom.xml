@@ -6,10 +6,10 @@
 
     <groupId>landclaimx</groupId>
     <artifactId>landclaimx</artifactId>
-    <version>1.5</version>
+    <version>1.6</version>
     <packaging>jar</packaging>
 
-    <name>Landclaimx</name>
+    <name>LandClaimX</name>
 
     <properties>
         <java.version>1.8</java.version>
