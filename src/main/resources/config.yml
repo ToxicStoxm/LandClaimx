@@ -2,6 +2,7 @@
 #                                           #
 #      This is the Configuration file       #
 #        for the LandClaimX plugin          #
+#                                           #
 #############################################
 
 #General settings
@@ -12,7 +13,7 @@ Plugin:
   #YOU NEED TO PUT &r (reset) AT THE END OR THE MESSAGE ITSELF WILL KEEP THE FORMAT!
   #Default: "§0§l[§bLandClaimX§0§l]§r "
   prefix: "§0§l[§bLandClaimX§0§l]§r "
-  #Consoleprefix to be desplayed in front of every message send by the plugin in the console log output
+  #Consoleprefix to be displayed in front of every message send by the plugin in the console log output
   #You can't use any colours or text formatting in this one
   #Default: "[LandClaimX] "
   consoleprefix: "[LandClaimX] "
@@ -25,4 +26,4 @@ Plugin:
 #                                        #
 ##########################################
 
-Version: "1.4"
+Version: "1.5"

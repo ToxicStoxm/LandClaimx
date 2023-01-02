@@ -9,7 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;;
+import java.util.UUID;
 
 //MAIN CLASS
 public final class LandClaimX extends JavaPlugin {
@@ -24,32 +24,16 @@ public final class LandClaimX extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
         // Plugin startup logic
         Bukkit.getLogger().info(consoleprefix + "Welcome back!");
         Bukkit.getLogger().info(consoleprefix + "Starting up...");
 
 
-
-
-
+        //writing default config or reloading it if it exists
         saveDefaultConfig();
+        reloadConfig();
 
-        //make File claims.yml if it doesn't already exist
-        claimsFile = new File(getDataFolder(), "claims.yml");
-
-        if (!claimsFile.exists()) {
-
-            claimsFile.getParentFile().mkdirs();
-
-            try {
-                claimsFile.createNewFile();
-            } catch (IOException ex) {
-
-                ex.printStackTrace();
-
-            }
-
-        }
         //console log
         Bukkit.getLogger().info(consoleprefix + "Loading config.yml...");
         Bukkit.getLogger().info(consoleprefix + "Loaded config.yml");
@@ -66,7 +50,19 @@ public final class LandClaimX extends JavaPlugin {
 
         for(Map.Entry<String, UUID> entry : mapFromFile.entrySet()){
 
-            Bukkit.getLogger().info(consoleprefix + "Chunk: "+ entry.getKey() + " <==> " + "Owner: " + Bukkit.getPlayer(entry.getValue()).getName() + " <==> " + "UUID: " + entry.getValue());
+            try {
+
+                Bukkit.getLogger().info(consoleprefix + "Chunk: "+ entry.getKey() + " <==> " + "Owner: " + Bukkit.getPlayer(entry.getValue()).getName() + " <==> " + "UUID: " + entry.getValue());
+
+            } catch (Exception e){
+
+                Bukkit.getLogger().info(consoleprefix + "Chunk: " + entry.getKey() + " <==> " + "Owner: " + Bukkit.getOfflinePlayer(entry.getValue()).getName() + " <==> " + "UUID: " + entry.getValue());
+
+            }
+
+
+
+
 
         }
         //console log
@@ -80,9 +76,10 @@ public final class LandClaimX extends JavaPlugin {
 
         //registering command '/claim' and TabCompletion for the '/claim' command
         getCommand("claim").setExecutor(new ClaimCommand(this));
-        getCommand("claim").setTabCompleter(new ClaimCommandTabCompletion());
+        getCommand("claim").setTabCompleter(new ClaimCommandTabCompletion(this));
 
     }
+
 
     //Function for getting claims from claims.yml and putting them into the HashMap 'chunks'
     public static Map<String, UUID> getHashMapFromTextFile() {
@@ -248,5 +245,15 @@ public final class LandClaimX extends JavaPlugin {
         chunks.clear();
 
     }
+
+    public String perms_claim = "landclaimx.claim";
+    public String perms_remove = "landclaimx.claim.remove";
+    public String perms_remove_other = "landclaimx.claim.remove.other";
+    public String perms_clear = "landclaimx.claim.clear";
+    public String perms_radius = "landclaimx.claim.radius";
+    public String perms_owner = "landclaimx.claim.owner";
+    public String perms_overwrite = "landclaimx.claim.overwrite";
+
+
 
 }

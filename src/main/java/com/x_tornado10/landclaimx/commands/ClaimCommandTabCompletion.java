@@ -1,5 +1,6 @@
 package com.x_tornado10.landclaimx.commands;
 
+import com.x_tornado10.landclaimx.LandClaimX;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -9,6 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClaimCommandTabCompletion implements TabCompleter {
+    private final LandClaimX plugin;
+
+    public ClaimCommandTabCompletion(LandClaimX plugin)
+    {
+        this.plugin = plugin;
+    }
+
     //Tabcomplete for the '/claim' command
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
@@ -25,7 +33,7 @@ public class ClaimCommandTabCompletion implements TabCompleter {
             List<String> claimargs = new ArrayList<>();
 
             //Permission check
-            if (player.hasPermission("landclaimx.claim.owner")) {
+            if (player.hasPermission(plugin.perms_owner)) {
 
                 //add 'owner' to list
                 claimargs.add("owner");
@@ -33,7 +41,7 @@ public class ClaimCommandTabCompletion implements TabCompleter {
             }
 
             //Permission check
-            if (player.hasPermission("landclaimx.claim.overwrite")) {
+            if (player.hasPermission(plugin.perms_overwrite)) {
 
                 //add 'overwrite' to list
                 claimargs.add("overwrite");
@@ -41,7 +49,7 @@ public class ClaimCommandTabCompletion implements TabCompleter {
             }
 
             //Permission check
-            if (player.hasPermission("landclaimx.claim.remove")) {
+            if (player.hasPermission(plugin.perms_remove)) {
 
                 //add 'remove' to list
                 claimargs.add("remove");
@@ -49,10 +57,16 @@ public class ClaimCommandTabCompletion implements TabCompleter {
             }
 
             //Permission check
-            if (player.hasPermission("landclaimx.claim.clearall")) {
+            if (player.hasPermission(plugin.perms_clear)) {
 
                 //add 'clear' to list
                 claimargs.add("clear");
+
+            }
+
+            if (player.hasPermission(plugin.perms_radius)) {
+
+                claimargs.add("radius");
 
             }
 
@@ -76,7 +90,7 @@ public class ClaimCommandTabCompletion implements TabCompleter {
             List<String> claimargs = new ArrayList<>();
 
             //Permission check
-            if (player.hasPermission("landclaimx.claim.clear")) {
+            if (player.hasPermission(plugin.perms_clear)) {
 
                 //if the first argument equals 'clear'
                 if (word.equals("clear")) {
@@ -85,6 +99,19 @@ public class ClaimCommandTabCompletion implements TabCompleter {
                     claimargs.add("confirm");
 
                 }
+
+            }
+
+            if (player.hasPermission(plugin.perms_radius)) {
+
+                claimargs.add("1");
+                claimargs.add("2");
+                claimargs.add("3");
+                claimargs.add("4");
+                claimargs.add("5");
+                claimargs.add("6");
+                claimargs.add("7");
+                claimargs.add("8");
 
             }
 

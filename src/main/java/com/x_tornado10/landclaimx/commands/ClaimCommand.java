@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.UUID;
 
 
 public class ClaimCommand implements CommandExecutor {
@@ -26,45 +26,44 @@ public class ClaimCommand implements CommandExecutor {
     @Override
     public  boolean onCommand(CommandSender sender, Command command, String label, String [] args) {
 
+        //Player Feedback messages
+        String noperms = plugin.prefix + "You do not have the permissions to execute that command!";
+        String invalargs = plugin.prefix + "You provided invalid arguments! " + "\n" + "Type '/claim help' to display the Help Menu";
+        String plinfo = plugin.prefix + "§bby §3x_Tornado10 " + "§bVersion: §3" + plugin.version + "§r";
+        String alredyclaimed = plugin.prefix + "This chunk is already claimed!" + "\n";
+        String isnotclaimed = plugin.prefix + "This Chunk isn't claimed yet!" + "\n" + "Type '/claim' to claim it";
+        String successclaim = plugin.prefix + "Successfully claimed chunk!";
+        String successclaims = plugin.prefix + "Successfully claimed chunks!";
 
-        //NoPremissionMessage String for later use
-        String nopermsmessage = plugin.prefix + "You do not have the permissions to execute that command!";
+        //used for /claim radius
+        String radius1 = "1";
+        String radius2 = "2";
+        String radius3 = "3";
+        String radius4 = "4";
+        String radius5 = "5";
+        String radius6 = "6";
+        String radius7 = "7";
+        String radius8 = "8";
 
-        //if the command isn't executed by a player
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(plugin.prefix + "Only Players can run this command!");
-            return true;
-        }
 
         //if the command is executed by a player
-        if (sender instanceof Player) {
+        if (!(sender instanceof Player)) {
 
+            //if the command isn't executed by a player
+            sender.sendMessage(plugin.prefix + "Only Players can run this command!");
+            return true;
 
+        } else {
 
             //defining player
             Player player = (Player) sender;
             //general plugin information. Displayed when using '/claim info'
-            String plinfo = plugin.prefix + "§bby §3x_Tornado10 " + "§bVersion: §3" + plugin.version + "§r";
-
-
-
-            //list of all online players for later use
-            List<String> onlineplayers = new ArrayList<>();
-            Player[] players = new Player[Bukkit.getOnlinePlayers().size()];
-            Bukkit.getServer().getOnlinePlayers().toArray(players);
-            for (int i = 0; i < players.length; i++) {
-
-                onlineplayers.add(players[i].getName());
-
-            }
-
 
             //permission check
-            if (player.hasPermission("landclaimx.claim")) {
+            if (player.hasPermission(plugin.perms_claim)) {
 
                 //if the player didn't provide any arguments
                 if (args.length == 0) {
-
 
                     //current chunk gets defined
                     Chunk chunk = player.getLocation().getChunk();
@@ -76,21 +75,21 @@ public class ClaimCommand implements CommandExecutor {
                     if (plugin.isChunk(chunkID)) {
 
                         //permission check
-                        if (player.hasPermission("landclaimx.claim.overwrite")) {
+                        if (player.hasPermission(plugin.perms_overwrite)) {
 
                             //player feedback
-                            sender.sendMessage(plugin.prefix + "This chunk is already claimed!" + "\n" + "Type '/claim overwrite' to overwrite the previous claim");
+                            sender.sendMessage(alredyclaimed + "Type '/claim overwrite' to overwrite the previous claim");
 
                             //permissio ncheck
-                        } else if (player.hasPermission("landclaimx.claim.owner")){
+                        } else if (player.hasPermission(plugin.perms_owner)){
 
                             //player feedback
-                            sender.sendMessage(plugin.prefix + "This chunk is already claimed!" + "\n" + "Type '/claim owner' to display the chunk's Owner");
+                            sender.sendMessage(alredyclaimed + "Type '/claim owner' to display the chunk's Owner");
 
                         }else {
 
                             //player feedback
-                            sender.sendMessage(plugin.prefix + "This chunk is already claimed!");
+                            sender.sendMessage(alredyclaimed + "You don't have the Permissions to overwrite the claim!");
 
                         }
 
@@ -99,40 +98,27 @@ public class ClaimCommand implements CommandExecutor {
                         //adds the current chunk to the HashMap 'chunks' (chunkID, UUID)
                         plugin.addChunk(chunkID, player.getUniqueId());
                         //player feedback
-                        player.sendMessage(plugin.prefix + "Successfully claimed chunk!");
+                        player.sendMessage(successclaim);
 
 
                     }
                     //if the player provided 1 argument
                 } else if (args.length == 1) {
 
-                    //putting the first argument in a string for later use
                     String word = args[0];
 
                     //argument check for the first argument, if the player provided wrong arguments a help message is send
-                    if (word.equals("owner") || word.equals("overwrite") || word.equals("remove") || word.equals("info") || word.equals("help") || word.equals("clear")) {
+                    if (!word.equals("owner") && !word.equals("overwrite") && !word.equals("info") && !word.equals("help") && !word.equals("clear") && !word.equals("radius") && !word.equals("remove")) {
 
-                        //if the player provided 2 arguments
-                        if (args.length == 2) {
-
-                            //putting the second argument in a string for later use
-                            String word2 = args[1];
-
-                            //argument check for the second argument, if the player provided wrong arguments a help message is send
-                            if (word2.equals("confirm")) {
-
-                            } else {
-
-                                //player feedback
-                                player.sendMessage(plugin.prefix + "You provided invalid arguments! " + "\n" + "Type '/claim help' to display the Help Menu");
-
-                            }
-
-                        }
-
-                    } else {
                         //player feedback
-                        player.sendMessage(plugin.prefix + "You provided invalid arguments! " + "\n" + "Type '/claim help' to display the Help Menu");
+                        player.sendMessage(invalargs);
+
+                    }
+
+                    if (word.equals("radius")) {
+
+                        player.sendMessage(plugin.prefix + "Please enter a number between 1 and 8!");
+
                     }
 
 
@@ -141,7 +127,7 @@ public class ClaimCommand implements CommandExecutor {
 
 
                         //permission check
-                        if (player.hasPermission("landclaimx.claim.owner")) {
+                        if (player.hasPermission(plugin.perms_owner)) {
 
                             Chunk chunk = player.getLocation().getChunk();
 
@@ -150,7 +136,7 @@ public class ClaimCommand implements CommandExecutor {
                             if (plugin.getOwner(chunkID) == null) {
 
                                 //player feedback
-                                player.sendMessage(plugin.prefix + "This Chunk isn't claimed yet!" + "\n" + "Type '/claim' to claim it");
+                                player.sendMessage(isnotclaimed);
                                 return false;
 
                             } else {
@@ -158,16 +144,26 @@ public class ClaimCommand implements CommandExecutor {
                                 //Putting information about the owner into strings
                                 String owneruuid = plugin.getOwner(chunkID).toString();
 
-                                String ownername = Bukkit.getPlayer(plugin.getOwner(chunkID)).getName().toString();
+                                try {
 
-                                //layer feedback
-                                player.sendMessage(plugin.prefix + "The owner of this chunk is: " + ownername + "   (" + owneruuid + ")");
+                                    String ownername = Bukkit.getPlayer(plugin.getOwner(chunkID)).getName();
+                                    //player feedback
+                                    player.sendMessage(plugin.prefix + "The owner of this chunk is: \n" + plugin.prefix + ownername);
+
+
+                                } catch (Exception e) {
+
+                                    String ownername = Bukkit.getOfflinePlayer(plugin.getOwner(chunkID)).getName();
+                                    //player feedback
+                                    player.sendMessage(plugin.prefix + "The owner of this chunk is: \n" + plugin.prefix + ownername);
+                                }
+
                             }
 
                         } else {
 
                             //player feedback
-                            player.sendMessage(nopermsmessage);
+                            player.sendMessage(noperms);
 
                         }
 
@@ -182,7 +178,7 @@ public class ClaimCommand implements CommandExecutor {
                     if (word.equals("overwrite")) {
 
                         //permission check
-                        if (player.hasPermission("landclaimx.claim.overwrite")) {
+                        if (player.hasPermission(plugin.perms_overwrite)) {
 
                             Chunk chunk = player.getLocation().getChunk();
 
@@ -191,12 +187,12 @@ public class ClaimCommand implements CommandExecutor {
                             plugin.addChunk(chunkID, player.getUniqueId());
 
                             //player feedback
-                            player.sendMessage(plugin.prefix + "Successfully claimed chunk!");
+                            player.sendMessage(successclaim);
 
                         } else {
 
                             //player feedback
-                            player.sendMessage(nopermsmessage);
+                            player.sendMessage(noperms);
 
                         }
 
@@ -211,7 +207,7 @@ public class ClaimCommand implements CommandExecutor {
                     if (word.equals("remove")) {
 
                         //permission check
-                        if (player.hasPermission("landclaimx.claim.remove")) {
+                        if (player.hasPermission(plugin.perms_remove)) {
 
                             Chunk chunk = player.getLocation().getChunk();
 
@@ -221,24 +217,24 @@ public class ClaimCommand implements CommandExecutor {
                             if (plugin.getOwner(chunkID) == null) {
 
                                 //player feedback
-                                player.sendMessage(plugin.prefix + "This Chunk isn't claimed yet!" + "\n" + "Type '/claim' to claim it");
+                                player.sendMessage(isnotclaimed);
                                 return false;
 
                             } else {
 
                                 //permission check
-                                if (player.hasPermission("landclaimx.claim.remove.other")) {
+                                if (player.hasPermission(plugin.perms_remove_other)) {
 
                                     //removing chunk from HashMap 'chunks'
                                     plugin.removeChunk(chunkID, player.getUniqueId());
-                                    player.sendMessage(plugin.prefix + "Successfully removed claim!");
+                                    player.sendMessage(successclaim);
 
                                     //check if the player tries to remove his own chunk claim
                                 } else if (((Player) sender).getUniqueId().equals(plugin.getOwner(chunkID))) {
 
                                     //removing chunk from HashMap 'chunks'
                                     plugin.removeChunk(chunkID, player.getUniqueId());
-                                    player.sendMessage(plugin.prefix + "Successfully removed claim!");
+                                    player.sendMessage(successclaim);
 
                                     //check if the player tries to remove other players chunk claim without permission
                                 } else {
@@ -253,7 +249,7 @@ public class ClaimCommand implements CommandExecutor {
                         }else {
 
                             //player feedback
-                            player.sendMessage(nopermsmessage);
+                            player.sendMessage(noperms);
 
                         }
 
@@ -276,7 +272,7 @@ public class ClaimCommand implements CommandExecutor {
                     if (word.equals("help")) {
 
                         //defining the help menu
-                        String[] helpmenu = new String[9];
+                        String[] helpmenu = new String[10];
 
                         //defining the lines of the help menu
                         helpmenu[0] = "§b -- /claim --               \n §7Claim the current chunk if it's not been claimed yet§r";
@@ -288,6 +284,7 @@ public class ClaimCommand implements CommandExecutor {
                         helpmenu[6] = "§7━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
                         helpmenu[7] = "§b -- /claim clear --         \n §7Clear all claimed chunks§r";
                         helpmenu[8] = "§b -- /claim clear confirm -- \n §7Confirmation to clear all claimed chunks (/claim clear)§r";
+                        helpmenu[9] = "§b -- /claim radius <1-8> --  \n §7Claim all chunks in a radius of 1-8. USE CAREFULLY!§r";
 
                         //defining the structure of the help menu
                         player.sendMessage(helpmenu[6] + "\n" +
@@ -300,6 +297,7 @@ public class ClaimCommand implements CommandExecutor {
                                 helpmenu[4] + "\n\n" +
                                 helpmenu[7] + "\n\n" +
                                 helpmenu[8] + "\n\n" +
+                                helpmenu[9] + "\n\n" +
 
                                 helpmenu[5] + "\n" +
                                 helpmenu[6]);
@@ -307,44 +305,174 @@ public class ClaimCommand implements CommandExecutor {
 
                     }
 
-
-
                     //if the first argument equals 'clear'
                     if (word.equals("clear")) {
 
                         //permission check
-                        if (player.hasPermission("landclaimx.claim.clearall")) {
+                        if (player.hasPermission(plugin.perms_clear)) {
 
                             //player feedback
-                            player.sendMessage("Are you sure that you want to delete all claimed chunks?\n" + "Type '/claim clearall confirm' to confirm");
+                            player.sendMessage("Are you sure that you want to delete all claimed chunks?\n" + "Type '/claim clear confirm' to confirm");
 
                         } else {
 
                             //player feedback
-                            player.sendMessage(nopermsmessage);
+                            player.sendMessage(noperms);
 
                         }
 
 
                     }
 
-
-
                     //if the player provided more than 1 argument
                 } else {
+
+                    String word = args[0];
 
                     //if the player provided 2 arguments
                     if (args.length == 2) {
 
-                        //putting the arguments into strings for later use
-                        String word = args[0];
                         String word2 = args[1];
 
-                        //permission check
-                        if (player.hasPermission("landclaimx.claim.clear")) {
+                        //argument check for the first and second argument, if the player provided wrong arguments a help message is send
+                        if (word.equals("clear"))  {
+                            if (player.hasPermission(plugin.perms_clear)) {
+                                if (!word2.equals("confirm")) {
 
-                            //if the first argument equals 'clear'
-                            if (word.equals("clear")) {
+                                    //player feedback
+                                    player.sendMessage(invalargs);
+
+                                }
+                            }
+
+                        }
+
+
+                        if (word.equals("radius")) {
+
+                            if (player.hasPermission(plugin.perms_radius)) {
+
+
+                                if (word2.equals(radius1) || word2.equals(radius2) || word2.equals(radius3) || word2.equals(radius4) || word2.equals(radius5) || word2.equals(radius6) || word2.equals(radius7) || word2.equals(radius8)) {
+
+                                   int chunkZ = player.getLocation().getChunk().getZ();
+                                   int chunkX = player.getLocation().getChunk().getX();
+
+
+                                       Integer chunkXm1 = chunkX-1;
+                                       Integer chunkXp1 = chunkX+1;
+
+                                       int chunkZm1 = chunkZ-1;
+                                       int chunkZp1 = chunkZ+1;
+
+                                       List<String> chunkID = new ArrayList<>();
+
+                                       chunkID.add(chunkX + "," + chunkZ);
+                                       chunkID.add(chunkXm1 + "," + chunkZ);
+                                       chunkID.add(chunkXm1 + "," + chunkZp1);
+                                       chunkID.add(chunkX + "," + chunkZp1);
+                                       chunkID.add(chunkXp1 + "," + chunkZp1);
+                                       chunkID.add(chunkXp1 + "," + chunkZ);
+                                       chunkID.add(chunkXp1 + "," + chunkZm1);
+                                       chunkID.add(chunkX + "," + chunkZm1);
+                                       chunkID.add(chunkXm1 + "," + chunkZm1);
+
+                                       UUID owner = player.getUniqueId();
+
+                                       int i = chunkID.size()-1;
+
+                                       while (i > -1) {
+
+                                           if (!plugin.isChunk(chunkID.get(i))) {
+
+                                               plugin.addChunk(chunkID.get(i), owner);
+
+                                           } else {
+
+                                               if (player.hasPermission(plugin.perms_overwrite) && !plugin.getOwner(chunkID.get(i)).equals(player.getUniqueId())) {
+
+                                                   plugin.addChunk(chunkID.get(i), owner);
+
+                                               }
+
+                                               List<UUID> u = new ArrayList<>();
+
+                                               u.add(plugin.getOwner(chunkID.get(i)));
+
+                                               List<String> owners = new ArrayList<>();
+
+                                               int in = u.size() - 1;
+
+
+                                               while (in > -1) {
+
+                                                   try {
+
+                                                       owners.add(Bukkit.getPlayer(u.get(in)).getName());
+
+                                                   } catch (Exception e) {
+
+                                                       owners.add(Bukkit.getOfflinePlayer(u.get(in)).getName());
+
+                                                   }
+
+                                                   in = in-1;
+
+                                               }
+
+                                               if (i == 0) {
+                                                   if (!plugin.getOwner(chunkID.get(i)).equals(player.getUniqueId())) {
+
+
+                                                       if (player.hasPermission(plugin.perms_overwrite)) {
+
+                                                           player.sendMessage(plugin.prefix + "Your selected area overlaps with chunks claimed by other players " + owners + "\n" + plugin.prefix + "Overwriting because needed permissions are given...");
+                                                           player.sendMessage(successclaims);
+
+                                                       } else {
+
+                                                           player.sendMessage(plugin.prefix + "Your selected area overlaps with chunks claimed by other players " + owners + "\n" + plugin.prefix + "Reduce the radius of the command or type '/claim help' for more info!");
+
+                                                       }
+
+                                                   } else {
+
+                                                       player.sendMessage(successclaims);
+
+                                                   }
+                                               }
+
+                                       }
+
+
+                                           i = i - 1;
+
+                                       }
+
+
+
+                                   } else {
+
+                                    player.sendMessage(invalargs);
+
+                                }
+
+
+                            } else {
+
+                                player.sendMessage(noperms);
+
+
+                            }
+
+                        }
+
+
+                        //if the first argument equals 'clear'
+                        if (word.equals("clear")) {
+
+                        //permission check
+                        if (player.hasPermission(plugin.perms_clear)) {
 
                                 //if the second argument equals 'confirm'
                                 if (word2.equals("confirm")) {
@@ -359,16 +487,20 @@ public class ClaimCommand implements CommandExecutor {
 
                                     //player feedback
                                     player.sendMessage(plugin.prefix + "Process complete!");
-                                    player.sendMessage(plugin.prefix + "Successfully deleted all cleimed chunks");
+                                    player.sendMessage(plugin.prefix + "Successfully deleted all claimed chunks");
+
+                                } else {
+
+                                    player.sendMessage(invalargs);
 
                                 }
 
+                            }else {
+
+                                //player feedback
+                                player.sendMessage(noperms);
+
                             }
-                        } else {
-
-                            //player feedback
-                            player.sendMessage(nopermsmessage);
-
                         }
 
 
@@ -386,7 +518,7 @@ public class ClaimCommand implements CommandExecutor {
             } else {
 
                 //player feedback
-                player.sendMessage(nopermsmessage);
+                player.sendMessage(noperms);
 
             }
 
@@ -395,4 +527,5 @@ public class ClaimCommand implements CommandExecutor {
         return true;
 
     }
+
 }
