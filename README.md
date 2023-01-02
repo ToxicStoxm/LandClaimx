@@ -8,8 +8,8 @@ landclaimx.claim.owner-------------------see current chunk's owner
 landclaimx.claim.overwrite---------------overwrite ownership of current chunk  
 landclaimx.claim.remove------------------remove claimed chunks owned by the sender    
 landclaimx.claim.remove_other------------remove claimed chunks owned by any player  
-landclaimx.claim.clear-------------------clear all chunk claims
-landclaimx.claim.radius------------------claim chunks in a custom radius
+landclaimx.claim.clear-------------------clear all chunk claims  
+landclaimx.claim.radius------------------claim chunks in a custom radius  
 
 ## Configuration:
 
