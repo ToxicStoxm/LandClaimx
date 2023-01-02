@@ -19,7 +19,7 @@ public final class LandClaimX extends JavaPlugin {
 
    private static HashMap<String, UUID> chunks;
 
-   final static String FilePath = "F:\\Plugintestserver\\plugins\\Landclaimx\\claims.yml";
+   final static String FilePath = ".
 
 
     @Override
