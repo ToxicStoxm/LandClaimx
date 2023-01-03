@@ -18,7 +18,7 @@ landclaimx.claim.radius------------------claim chunks in a custom radius
             -Plugin Prefix  
             -Console Prefix  
 
-2. LandClaimX\claims.yml  
+2. LandClaimX\data\claims.yml  
     Storage for all saved claims  
     DO NOT CHANGE ANYTHING IN THIS FILE UNLESS YOU KNOW WHAT YOU ARE DOING!
     
