@@ -7,10 +7,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginLogger;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 
 public class ClaimCommand implements CommandExecutor {
@@ -18,10 +17,20 @@ public class ClaimCommand implements CommandExecutor {
 
     private final LandClaimX plugin;
 
+
+
     public ClaimCommand(LandClaimX plugin)
     {
         this.plugin = plugin;
     }
+
+   public static boolean allow = true;
+
+    public static boolean getAllow() {
+        return allow;
+    }
+
+
 
     @Override
     public  boolean onCommand(CommandSender sender, Command command, String label, String [] args) {
@@ -353,33 +362,412 @@ public class ClaimCommand implements CommandExecutor {
                             if (player.hasPermission(plugin.perms_radius)) {
 
 
-                                if (word2.equals(radius1) || word2.equals(radius2) || word2.equals(radius3) || word2.equals(radius4) || word2.equals(radius5) || word2.equals(radius6) || word2.equals(radius7) || word2.equals(radius8)) {
+                                if (radius1to8(word2)) {
 
                                    int chunkZ = player.getLocation().getChunk().getZ();
                                    int chunkX = player.getLocation().getChunk().getX();
 
+                                   Bukkit.getLogger().info(plugin.consoleprefix + "Calculating chunks...");
+                                   player.sendMessage(plugin.prefix + "Calculating chunks...");
 
-                                       Integer chunkXm1 = chunkX-1;
-                                       Integer chunkXp1 = chunkX+1;
+
+                                       int chunkXm1 = chunkX-1;
+                                       int chunkXp1 = chunkX+1;
 
                                        int chunkZm1 = chunkZ-1;
                                        int chunkZp1 = chunkZ+1;
 
+
+                                       int chunkXm2 = chunkX-2;
+                                       int chunkXp2 = chunkX+2;
+
+                                       int chunkZm2 = chunkZ-2;
+                                       int chunkZp2 = chunkZ+2;
+
+
+                                       int chunkXm3 = chunkX-3;
+                                       int chunkXp3 = chunkX+3;
+
+                                       int chunkZm3 = chunkZ-3;
+                                       int chunkZp3 = chunkZ+3;
+
+
+                                       int chunkXm4 = chunkX-4;
+                                       int chunkXp4 = chunkX+4;
+
+                                       int chunkZm4 = chunkZ-4;
+                                       int chunkZp4 = chunkZ+4;
+
+
+                                       int chunkXm5 = chunkX-5;
+                                       int chunkXp5 = chunkX+5;
+
+                                       int chunkZm5 = chunkZ-5;
+                                       int chunkZp5 = chunkZ+5;
+
+
+                                       int chunkXm6 = chunkX-6;
+                                       int chunkXp6 = chunkX+6;
+
+                                       int chunkZm6 = chunkZ-6;
+                                       int chunkZp6 = chunkZ+6;
+
+
+                                       int chunkXm7 = chunkX-7;
+                                       int chunkXp7 = chunkX+7;
+
+                                       int chunkZm7 = chunkZ-7;
+                                       int chunkZp7 = chunkZ+7;
+
+                                       int chunkXm8 = chunkX-8;
+                                       int chunkXp8 = chunkX+8;
+
+                                       int chunkZm8 = chunkZ-8;
+                                       int chunkZp8 = chunkZ+8;
+
+
+                                       player.sendMessage(plugin.prefix + "Please wait!");
+
+
                                        List<String> chunkID = new ArrayList<>();
 
-                                       chunkID.add(chunkX + "," + chunkZ);
-                                       chunkID.add(chunkXm1 + "," + chunkZ);
-                                       chunkID.add(chunkXm1 + "," + chunkZp1);
-                                       chunkID.add(chunkX + "," + chunkZp1);
-                                       chunkID.add(chunkXp1 + "," + chunkZp1);
-                                       chunkID.add(chunkXp1 + "," + chunkZ);
-                                       chunkID.add(chunkXp1 + "," + chunkZm1);
-                                       chunkID.add(chunkX + "," + chunkZm1);
-                                       chunkID.add(chunkXm1 + "," + chunkZm1);
+                                       if (radius1to8(word2)) {
+
+                                           chunkID.add(chunkX + "," + chunkZ);
+                                           chunkID.add(chunkXm1 + "," + chunkZ);
+                                           chunkID.add(chunkXm1 + "," + chunkZp1);
+                                           chunkID.add(chunkX + "," + chunkZp1);
+                                           chunkID.add(chunkXp1 + "," + chunkZp1);
+                                           chunkID.add(chunkXp1 + "," + chunkZ);
+                                           chunkID.add(chunkXp1 + "," + chunkZm1);
+                                           chunkID.add(chunkX + "," + chunkZm1);
+                                           chunkID.add(chunkXm1 + "," + chunkZm1);
+
+                                       }
+
+                                       if (radiusmorethan2(word2)) {
+
+                                           chunkID.add(chunkXm2 + "," + chunkZ);
+                                           chunkID.add(chunkXm2 + "," + chunkZp1);
+                                           chunkID.add(chunkXm2 + "," + chunkZp2);
+                                           chunkID.add(chunkXm1 + "," + chunkZp2);
+                                           chunkID.add(chunkX + "," + chunkZp2);
+                                           chunkID.add(chunkXp1 + "," + chunkZp2);
+                                           chunkID.add(chunkXp2 + "," + chunkZp2);
+                                           chunkID.add(chunkXp2 + "," + chunkZp1);
+                                           chunkID.add(chunkXp2 + "," + chunkZ);
+                                           chunkID.add(chunkXp2 + "," + chunkZm1);
+                                           chunkID.add(chunkXp2 + "," + chunkZm2);
+                                           chunkID.add(chunkXp1 + "," + chunkZm2);
+                                           chunkID.add(chunkX + "," + chunkZm2);
+                                           chunkID.add(chunkXm1 + "," + chunkZm2);
+                                           chunkID.add(chunkXm2 + "," + chunkZm2);
+                                           chunkID.add(chunkXm2 + "," + chunkZm1);
+
+                                       }
+
+                                       if (radiusmorethan3(word2)) {
+
+                                           chunkID.add(chunkXm3 + "," + chunkZ);
+                                           chunkID.add(chunkXm3 + "," + chunkZp1);
+                                           chunkID.add(chunkXm3 + "," + chunkZp2);
+                                           chunkID.add(chunkXm3 + "," + chunkZp3);
+                                           chunkID.add(chunkXm2 + "," + chunkZp3);
+                                           chunkID.add(chunkXm1 + "," + chunkZp3);
+                                           chunkID.add(chunkX + "," + chunkZp3);
+                                           chunkID.add(chunkXp1 + "," + chunkZp3);
+                                           chunkID.add(chunkXp2 + "," + chunkZp3);
+                                           chunkID.add(chunkXp3 + "," + chunkZp3);
+                                           chunkID.add(chunkXp3 + "," + chunkZp2);
+                                           chunkID.add(chunkXp3 + "," + chunkZp1);
+                                           chunkID.add(chunkXp3 + "," + chunkZ);
+                                           chunkID.add(chunkXp3 + "," + chunkZm1);
+                                           chunkID.add(chunkXp3 + "," + chunkZm2);
+                                           chunkID.add(chunkXp3 + "," + chunkZm3);
+                                           chunkID.add(chunkXp2 + "," + chunkZm3);
+                                           chunkID.add(chunkXp1 + "," + chunkZm3);
+                                           chunkID.add(chunkX + "," + chunkZm3);
+                                           chunkID.add(chunkXm1 + "," + chunkZm3);
+                                           chunkID.add(chunkXm2 + "," + chunkZm3);
+                                           chunkID.add(chunkXm3 + "," + chunkZm3);
+                                           chunkID.add(chunkXm3 + "," + chunkZm2);
+                                           chunkID.add(chunkXm3 + "," + chunkZm1);
+
+                                       }
+
+                                       if (radiusmorethan4(word2)) {
+
+                                           chunkID.add(chunkXm4 + "," + chunkZ);
+                                           chunkID.add(chunkXm4 + "," + chunkZp1);
+                                           chunkID.add(chunkXm4 + "," + chunkZp2);
+                                           chunkID.add(chunkXm4 + "," + chunkZp3);
+                                           chunkID.add(chunkXm4 + "," + chunkZp4);
+                                           chunkID.add(chunkXm3 + "," + chunkZp4);
+                                           chunkID.add(chunkXm2 + "," + chunkZp4);
+                                           chunkID.add(chunkXm1 + "," + chunkZp4);
+                                           chunkID.add(chunkX + "," + chunkZp4);
+                                           chunkID.add(chunkXp1 + "," + chunkZp4);
+                                           chunkID.add(chunkXp2 + "," + chunkZp4);
+                                           chunkID.add(chunkXp3 + "," + chunkZp4);
+                                           chunkID.add(chunkXp4 + "," + chunkZp4);
+                                           chunkID.add(chunkXp4 + "," + chunkZp3);
+                                           chunkID.add(chunkXp4 + "," + chunkZp2);
+                                           chunkID.add(chunkXp4 + "," + chunkZp1);
+                                           chunkID.add(chunkXp4 + "," + chunkZ);
+                                           chunkID.add(chunkXp4 + "," + chunkZm1);
+                                           chunkID.add(chunkXp4 + "," + chunkZm2);
+                                           chunkID.add(chunkXp4 + "," + chunkZm3);
+                                           chunkID.add(chunkXp4 + "," + chunkZm4);
+                                           chunkID.add(chunkXp3 + "," + chunkZm4);
+                                           chunkID.add(chunkXp2 + "," + chunkZm4);
+                                           chunkID.add(chunkXp1 + "," + chunkZm4);
+                                           chunkID.add(chunkX + "," + chunkZm4);
+                                           chunkID.add(chunkXm1 + "," + chunkZm4);
+                                           chunkID.add(chunkXm2 + "," + chunkZm4);
+                                           chunkID.add(chunkXm3 + "," + chunkZm4);
+                                           chunkID.add(chunkXm4 + "," + chunkZm4);
+                                           chunkID.add(chunkXm4 + "," + chunkZm3);
+                                           chunkID.add(chunkXm4 + "," + chunkZm2);
+                                           chunkID.add(chunkXm4 + "," + chunkZm1);
+
+                                       }
+
+
+
+                                       if (radiusmorethan5(word2)) {
+
+                                           chunkID.add(chunkXm5 + "," + chunkZ);
+                                           chunkID.add(chunkXm5 + "," + chunkZp1);
+                                           chunkID.add(chunkXm5 + "," + chunkZp2);
+                                           chunkID.add(chunkXm5 + "," + chunkZp3);
+                                           chunkID.add(chunkXm5 + "," + chunkZp4);
+                                           chunkID.add(chunkXm5 + "," + chunkZp5);
+                                           chunkID.add(chunkXm4 + "," + chunkZp5);
+                                           chunkID.add(chunkXm3 + "," + chunkZp5);
+                                           chunkID.add(chunkXm2 + "," + chunkZp5);
+                                           chunkID.add(chunkXm1 + "," + chunkZp5);
+                                           chunkID.add(chunkX + "," + chunkZp5);
+                                           chunkID.add(chunkXp1 + "," + chunkZp5);
+                                           chunkID.add(chunkXp2 + "," + chunkZp5);
+                                           chunkID.add(chunkXp3 + "," + chunkZp5);
+                                           chunkID.add(chunkXp4 + "," + chunkZp5);
+                                           chunkID.add(chunkXp5 + "," + chunkZp5);
+                                           chunkID.add(chunkXp5 + "," + chunkZp4);
+                                           chunkID.add(chunkXp5 + "," + chunkZp3);
+                                           chunkID.add(chunkXp5 + "," + chunkZp2);
+                                           chunkID.add(chunkXp5 + "," + chunkZp1);
+                                           chunkID.add(chunkXp5 + "," + chunkZ);
+                                           chunkID.add(chunkXp5 + "," + chunkZm1);
+                                           chunkID.add(chunkXp5 + "," + chunkZm2);
+                                           chunkID.add(chunkXp5 + "," + chunkZm3);
+                                           chunkID.add(chunkXp5 + "," + chunkZm4);
+                                           chunkID.add(chunkXp5 + "," + chunkZm5);
+                                           chunkID.add(chunkXp4 + "," + chunkZm5);
+                                           chunkID.add(chunkXp3 + "," + chunkZm5);
+                                           chunkID.add(chunkXp2 + "," + chunkZm5);
+                                           chunkID.add(chunkXp1 + "," + chunkZm5);
+                                           chunkID.add(chunkX + "," + chunkZm5);
+                                           chunkID.add(chunkXm1 + "," + chunkZm5);
+                                           chunkID.add(chunkXm2 + "," + chunkZm5);
+                                           chunkID.add(chunkXm3 + "," + chunkZm5);
+                                           chunkID.add(chunkXm4 + "," + chunkZm5);
+                                           chunkID.add(chunkXm5 + "," + chunkZm5);
+                                           chunkID.add(chunkXm5 + "," + chunkZm4);
+                                           chunkID.add(chunkXm5 + "," + chunkZm3);
+                                           chunkID.add(chunkXm5 + "," + chunkZm2);
+                                           chunkID.add(chunkXm5 + "," + chunkZm1);
+
+                                       }
+
+                                       if (radiusmorethan6(word2)) {
+
+                                           chunkID.add(chunkXm6 + "," + chunkZ);
+                                           chunkID.add(chunkXm6 + "," + chunkZp1);
+                                           chunkID.add(chunkXm6 + "," + chunkZp2);
+                                           chunkID.add(chunkXm6 + "," + chunkZp3);
+                                           chunkID.add(chunkXm6 + "," + chunkZp4);
+                                           chunkID.add(chunkXm6 + "," + chunkZp5);
+                                           chunkID.add(chunkXm6 + "," + chunkZp6);
+                                           chunkID.add(chunkXm5 + "," + chunkZp6);
+                                           chunkID.add(chunkXm4 + "," + chunkZp6);
+                                           chunkID.add(chunkXm3 + "," + chunkZp6);
+                                           chunkID.add(chunkXm2 + "," + chunkZp6);
+                                           chunkID.add(chunkXm1 + "," + chunkZp6);
+                                           chunkID.add(chunkX + "," + chunkZp6);
+                                           chunkID.add(chunkXp1 + "," + chunkZp6);
+                                           chunkID.add(chunkXp2 + "," + chunkZp6);
+                                           chunkID.add(chunkXp3 + "," + chunkZp6);
+                                           chunkID.add(chunkXp4 + "," + chunkZp6);
+                                           chunkID.add(chunkXp5 + "," + chunkZp6);
+                                           chunkID.add(chunkXp6 + "," + chunkZp6);
+                                           chunkID.add(chunkXp6 + "," + chunkZp5);
+                                           chunkID.add(chunkXp6 + "," + chunkZp4);
+                                           chunkID.add(chunkXp6 + "," + chunkZp3);
+                                           chunkID.add(chunkXp6 + "," + chunkZp2);
+                                           chunkID.add(chunkXp6 + "," + chunkZp1);
+                                           chunkID.add(chunkXp6 + "," + chunkZ);
+                                           chunkID.add(chunkXp6 + "," + chunkZm1);
+                                           chunkID.add(chunkXp6 + "," + chunkZm2);
+                                           chunkID.add(chunkXp6 + "," + chunkZm3);
+                                           chunkID.add(chunkXp6 + "," + chunkZm4);
+                                           chunkID.add(chunkXp6 + "," + chunkZm5);
+                                           chunkID.add(chunkXp6 + "," + chunkZm6);
+                                           chunkID.add(chunkXp5 + "," + chunkZm6);
+                                           chunkID.add(chunkXp4 + "," + chunkZm6);
+                                           chunkID.add(chunkXp3 + "," + chunkZm6);
+                                           chunkID.add(chunkXp2 + "," + chunkZm6);
+                                           chunkID.add(chunkXp1 + "," + chunkZm6);
+                                           chunkID.add(chunkX + "," + chunkZm6);
+                                           chunkID.add(chunkXm1 + "," + chunkZm6);
+                                           chunkID.add(chunkXm2 + "," + chunkZm6);
+                                           chunkID.add(chunkXm3 + "," + chunkZm6);
+                                           chunkID.add(chunkXm4 + "," + chunkZm6);
+                                           chunkID.add(chunkXm5 + "," + chunkZm6);
+                                           chunkID.add(chunkXm6 + "," + chunkZm6);
+                                           chunkID.add(chunkXm6 + "," + chunkZm5);
+                                           chunkID.add(chunkXm6 + "," + chunkZm4);
+                                           chunkID.add(chunkXm6 + "," + chunkZm3);
+                                           chunkID.add(chunkXm6 + "," + chunkZm2);
+                                           chunkID.add(chunkXm6 + "," + chunkZm1);
+
+                                       }
+
+                                       if (radiusmorethan7(word2)) {
+
+                                           chunkID.add(chunkXm7 + "," + chunkZp1);
+                                           chunkID.add(chunkXm7 + "," + chunkZp2);
+                                           chunkID.add(chunkXm7 + "," + chunkZp3);
+                                           chunkID.add(chunkXm7 + "," + chunkZp4);
+                                           chunkID.add(chunkXm7 + "," + chunkZp5);
+                                           chunkID.add(chunkXm7 + "," + chunkZp6);
+                                           chunkID.add(chunkXm7 + "," + chunkZp7);
+                                           chunkID.add(chunkXm7 + "," + chunkZp7);
+                                           chunkID.add(chunkXm6 + "," + chunkZp7);
+                                           chunkID.add(chunkXm5 + "," + chunkZp7);
+                                           chunkID.add(chunkXm4 + "," + chunkZp7);
+                                           chunkID.add(chunkXm3 + "," + chunkZp7);
+                                           chunkID.add(chunkXm2 + "," + chunkZp7);
+                                           chunkID.add(chunkXm1 + "," + chunkZp7);
+                                           chunkID.add(chunkX + "," + chunkZp7);
+                                           chunkID.add(chunkXp1 + "," + chunkZp7);
+                                           chunkID.add(chunkXp2 + "," + chunkZp7);
+                                           chunkID.add(chunkXp3 + "," + chunkZp7);
+                                           chunkID.add(chunkXp4 + "," + chunkZp7);
+                                           chunkID.add(chunkXp5 + "," + chunkZp7);
+                                           chunkID.add(chunkXp6 + "," + chunkZp7);
+                                           chunkID.add(chunkXp7 + "," + chunkZp6);
+                                           chunkID.add(chunkXp7 + "," + chunkZp5);
+                                           chunkID.add(chunkXp7 + "," + chunkZp4);
+                                           chunkID.add(chunkXp7 + "," + chunkZp3);
+                                           chunkID.add(chunkXp7 + "," + chunkZp2);
+                                           chunkID.add(chunkXp7 + "," + chunkZp1);
+                                           chunkID.add(chunkXp7 + "," + chunkZ);
+                                           chunkID.add(chunkXp7 + "," + chunkZm1);
+                                           chunkID.add(chunkXp7 + "," + chunkZm2);
+                                           chunkID.add(chunkXp7 + "," + chunkZm3);
+                                           chunkID.add(chunkXp7 + "," + chunkZm4);
+                                           chunkID.add(chunkXp7 + "," + chunkZm5);
+                                           chunkID.add(chunkXp7 + "," + chunkZm6);
+                                           chunkID.add(chunkXp7 + "," + chunkZm7);
+                                           chunkID.add(chunkXp7 + "," + chunkZm7);
+                                           chunkID.add(chunkXp6 + "," + chunkZm7);
+                                           chunkID.add(chunkXp5 + "," + chunkZm7);
+                                           chunkID.add(chunkXp4 + "," + chunkZm7);
+                                           chunkID.add(chunkXp3 + "," + chunkZm7);
+                                           chunkID.add(chunkXp2 + "," + chunkZm7);
+                                           chunkID.add(chunkXp1 + "," + chunkZm7);
+                                           chunkID.add(chunkX + "," + chunkZm7);
+                                           chunkID.add(chunkXm1 + "," + chunkZm7);
+                                           chunkID.add(chunkXm2 + "," + chunkZm7);
+                                           chunkID.add(chunkXm3 + "," + chunkZm7);
+                                           chunkID.add(chunkXm4 + "," + chunkZm7);
+                                           chunkID.add(chunkXm5 + "," + chunkZm7);
+                                           chunkID.add(chunkXm6 + "," + chunkZm7);
+                                           chunkID.add(chunkXm7 + "," + chunkZm6);
+                                           chunkID.add(chunkXm7 + "," + chunkZm5);
+                                           chunkID.add(chunkXm7 + "," + chunkZm4);
+                                           chunkID.add(chunkXm7 + "," + chunkZm3);
+                                           chunkID.add(chunkXm7 + "," + chunkZm2);
+                                           chunkID.add(chunkXm7 + "," + chunkZm1);
+                                           chunkID.add(chunkXm7 + "," + chunkZ);
+
+                                       }
+
+                                       if (word2.equals(radius8)) {
+
+                                           chunkID.add(chunkXm8 + "," + chunkZ);
+                                           chunkID.add(chunkXm8 + "," + chunkZp1);
+                                           chunkID.add(chunkXm8 + "," + chunkZp2);
+                                           chunkID.add(chunkXm8 + "," + chunkZp3);
+                                           chunkID.add(chunkXm8 + "," + chunkZp4);
+                                           chunkID.add(chunkXm8 + "," + chunkZp5);
+                                           chunkID.add(chunkXm8 + "," + chunkZp6);
+                                           chunkID.add(chunkXm8 + "," + chunkZp7);
+                                           chunkID.add(chunkXm8 + "," + chunkZp8);
+                                           chunkID.add(chunkXm7 + "," + chunkZp8);
+                                           chunkID.add(chunkXm6 + "," + chunkZp8);
+                                           chunkID.add(chunkXm5 + "," + chunkZp8);
+                                           chunkID.add(chunkXm4 + "," + chunkZp8);
+                                           chunkID.add(chunkXm3 + "," + chunkZp8);
+                                           chunkID.add(chunkXm2 + "," + chunkZp8);
+                                           chunkID.add(chunkXm1 + "," + chunkZp8);
+                                           chunkID.add(chunkX + "," + chunkZp8);
+                                           chunkID.add(chunkXp1 + "," + chunkZp8);
+                                           chunkID.add(chunkXp2 + "," + chunkZp8);
+                                           chunkID.add(chunkXp3 + "," + chunkZp8);
+                                           chunkID.add(chunkXp4 + "," + chunkZp8);
+                                           chunkID.add(chunkXp5 + "," + chunkZp8);
+                                           chunkID.add(chunkXp6 + "," + chunkZp8);
+                                           chunkID.add(chunkXp7 + "," + chunkZp8);
+                                           chunkID.add(chunkXp8 + "," + chunkZp8);
+                                           chunkID.add(chunkXp8 + "," + chunkZp7);
+                                           chunkID.add(chunkXp8 + "," + chunkZp6);
+                                           chunkID.add(chunkXp8 + "," + chunkZp5);
+                                           chunkID.add(chunkXp8 + "," + chunkZp4);
+                                           chunkID.add(chunkXp8 + "," + chunkZp3);
+                                           chunkID.add(chunkXp8 + "," + chunkZp2);
+                                           chunkID.add(chunkXp8 + "," + chunkZp1);
+                                           chunkID.add(chunkXp8 + "," + chunkZ);
+                                           chunkID.add(chunkXp8 + "," + chunkZm1);
+                                           chunkID.add(chunkXp8 + "," + chunkZm2);
+                                           chunkID.add(chunkXp8 + "," + chunkZm3);
+                                           chunkID.add(chunkXp8 + "," + chunkZm4);
+                                           chunkID.add(chunkXp8 + "," + chunkZm5);
+                                           chunkID.add(chunkXp8 + "," + chunkZm6);
+                                           chunkID.add(chunkXp8 + "," + chunkZm7);
+                                           chunkID.add(chunkXp8 + "," + chunkZm8);
+                                           chunkID.add(chunkXp7 + "," + chunkZm8);
+                                           chunkID.add(chunkXp6 + "," + chunkZm8);
+                                           chunkID.add(chunkXp5 + "," + chunkZm8);
+                                           chunkID.add(chunkXp4 + "," + chunkZm8);
+                                           chunkID.add(chunkXp3 + "," + chunkZm8);
+                                           chunkID.add(chunkXp2 + "," + chunkZm8);
+                                           chunkID.add(chunkXp1 + "," + chunkZm8);
+                                           chunkID.add(chunkX + "," + chunkZm8);
+                                           chunkID.add(chunkXm1 + "," + chunkZm8);
+                                           chunkID.add(chunkXm2 + "," + chunkZm8);
+                                           chunkID.add(chunkXm3 + "," + chunkZm8);
+                                           chunkID.add(chunkXm4 + "," + chunkZm8);
+                                           chunkID.add(chunkXm5 + "," + chunkZm8);
+                                           chunkID.add(chunkXm6 + "," + chunkZm8);
+                                           chunkID.add(chunkXm7 + "," + chunkZm8);
+                                           chunkID.add(chunkXm8 + "," + chunkZm8);
+                                           chunkID.add(chunkXm8 + "," + chunkZm7);
+                                           chunkID.add(chunkXm8 + "," + chunkZm6);
+                                           chunkID.add(chunkXm8 + "," + chunkZm5);
+                                           chunkID.add(chunkXm8 + "," + chunkZm4);
+                                           chunkID.add(chunkXm8 + "," + chunkZm3);
+                                           chunkID.add(chunkXm8 + "," + chunkZm2);
+                                           chunkID.add(chunkXm8 + "," + chunkZm1);
+
+                                       }
+
+                                       Bukkit.getLogger().info(plugin.consoleprefix + "Done!");
 
                                        UUID owner = player.getUniqueId();
 
                                        int i = chunkID.size()-1;
+
 
                                        while (i > -1) {
 
@@ -394,33 +782,39 @@ public class ClaimCommand implements CommandExecutor {
                                                    plugin.addChunk(chunkID.get(i), owner);
 
                                                }
+                                           }
+
+
 
                                                List<UUID> u = new ArrayList<>();
 
                                                u.add(plugin.getOwner(chunkID.get(i)));
 
-                                               List<String> owners = new ArrayList<>();
-
-                                               int in = u.size() - 1;
 
 
-                                               while (in > -1) {
+                                               if (i == 0) {
 
-                                                   try {
+                                                   List<String> owners = new ArrayList<>();
 
-                                                       owners.add(Bukkit.getPlayer(u.get(in)).getName());
+                                                   int in = u.size() - 1;
 
-                                                   } catch (Exception e) {
 
-                                                       owners.add(Bukkit.getOfflinePlayer(u.get(in)).getName());
+                                                   while (in > -1) {
+
+                                                       try {
+
+                                                           owners.add(Bukkit.getPlayer(u.get(in)).getName());
+
+                                                       } catch (Exception e) {
+
+                                                           owners.add(Bukkit.getOfflinePlayer(u.get(in)).getName());
+
+                                                       }
+
+                                                       in = in-1;
 
                                                    }
 
-                                                   in = in-1;
-
-                                               }
-
-                                               if (i == 0) {
                                                    if (!plugin.getOwner(chunkID.get(i)).equals(player.getUniqueId())) {
 
 
@@ -440,9 +834,12 @@ public class ClaimCommand implements CommandExecutor {
                                                        player.sendMessage(successclaims);
 
                                                    }
-                                               }
 
-                                       }
+
+                                                   u.clear();
+                                                   owners.clear();
+
+                                               }
 
 
                                            i = i - 1;
@@ -525,6 +922,189 @@ public class ClaimCommand implements CommandExecutor {
         }
 
         return true;
+
+    }
+
+    public boolean radius1to8(String word2) {
+
+        //used for /claim radius
+        String radius1 = "1";
+        String radius2 = "2";
+        String radius3 = "3";
+        String radius4 = "4";
+        String radius5 = "5";
+        String radius6 = "6";
+        String radius7 = "7";
+        String radius8 = "8";
+
+        if (word2.equals(radius1) || word2.equals(radius2) || word2.equals(radius3) || word2.equals(radius4) || word2.equals(radius5) || word2.equals(radius6) || word2.equals(radius7) || word2.equals(radius8)) {
+
+            return true;
+
+        } else {
+
+            return false;
+
+        }
+
+
+
+    }
+
+
+    public boolean radiusmorethan2(String word2) {
+
+        //used for /claim radius
+        String radius1 = "1";
+        String radius2 = "2";
+        String radius3 = "3";
+        String radius4 = "4";
+        String radius5 = "5";
+        String radius6 = "6";
+        String radius7 = "7";
+        String radius8 = "8";
+
+        if (word2.equals(radius2) || word2.equals(radius3) || word2.equals(radius4) || word2.equals(radius5) || word2.equals(radius6) || word2.equals(radius7) || word2.equals(radius8)) {
+
+            return true;
+
+        } else {
+
+            return false;
+
+        }
+
+
+
+    }
+
+    public boolean radiusmorethan3(String word2) {
+
+        //used for /claim radius
+        String radius1 = "1";
+        String radius2 = "2";
+        String radius3 = "3";
+        String radius4 = "4";
+        String radius5 = "5";
+        String radius6 = "6";
+        String radius7 = "7";
+        String radius8 = "8";
+
+        if (word2.equals(radius3) || word2.equals(radius4) || word2.equals(radius5) || word2.equals(radius6) || word2.equals(radius7) || word2.equals(radius8)) {
+
+            return true;
+
+        } else {
+
+            return false;
+
+        }
+
+
+
+    }
+
+    public boolean radiusmorethan4(String word2) {
+
+        //used for /claim radius
+        String radius1 = "1";
+        String radius2 = "2";
+        String radius3 = "3";
+        String radius4 = "4";
+        String radius5 = "5";
+        String radius6 = "6";
+        String radius7 = "7";
+        String radius8 = "8";
+
+        if (word2.equals(radius4) || word2.equals(radius5) || word2.equals(radius6) || word2.equals(radius7) || word2.equals(radius8)) {
+
+            return true;
+
+        } else {
+
+            return false;
+
+        }
+
+
+
+    }
+
+    public boolean radiusmorethan5(String word2) {
+
+        //used for /claim radius
+        String radius1 = "1";
+        String radius2 = "2";
+        String radius3 = "3";
+        String radius4 = "4";
+        String radius5 = "5";
+        String radius6 = "6";
+        String radius7 = "7";
+        String radius8 = "8";
+
+        if (word2.equals(radius5) || word2.equals(radius6) || word2.equals(radius7) || word2.equals(radius8)) {
+
+            return true;
+
+        } else {
+
+            return false;
+
+        }
+
+
+
+    }
+
+    public boolean radiusmorethan6(String word2) {
+
+        //used for /claim radius
+        String radius1 = "1";
+        String radius2 = "2";
+        String radius3 = "3";
+        String radius4 = "4";
+        String radius5 = "5";
+        String radius6 = "6";
+        String radius7 = "7";
+        String radius8 = "8";
+
+        if (word2.equals(radius6) || word2.equals(radius7) || word2.equals(radius8)) {
+
+            return true;
+
+        } else {
+
+            return false;
+
+        }
+
+
+
+    }
+
+    public boolean radiusmorethan7(String word2) {
+
+        //used for /claim radius
+        String radius1 = "1";
+        String radius2 = "2";
+        String radius3 = "3";
+        String radius4 = "4";
+        String radius5 = "5";
+        String radius6 = "6";
+        String radius7 = "7";
+        String radius8 = "8";
+
+        if (word2.equals(radius7) || word2.equals(radius8)) {
+
+            return true;
+
+        } else {
+
+            return false;
+
+        }
+
+
 
     }
 

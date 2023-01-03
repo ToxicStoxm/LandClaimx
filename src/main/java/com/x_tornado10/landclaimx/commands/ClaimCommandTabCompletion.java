@@ -104,14 +104,17 @@ public class ClaimCommandTabCompletion implements TabCompleter {
 
             if (player.hasPermission(plugin.perms_radius)) {
 
-                claimargs.add("1");
-                claimargs.add("2");
-                claimargs.add("3");
-                claimargs.add("4");
-                claimargs.add("5");
-                claimargs.add("6");
-                claimargs.add("7");
-                claimargs.add("8");
+                if (word.equals("radius")) {
+
+                    claimargs.add("1");
+                    claimargs.add("2");
+                    claimargs.add("3");
+                    claimargs.add("4");
+                    claimargs.add("5");
+                    claimargs.add("6");
+                    claimargs.add("7");
+                    claimargs.add("8");
+                }
 
             }
 

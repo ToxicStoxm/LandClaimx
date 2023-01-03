@@ -17,13 +17,7 @@ Plugin:
   #You can't use any colours or text formatting in this one
   #Default: "[LandClaimX] "
   consoleprefix: "[LandClaimX] "
-
-
-
-##########################################
-#                                        #
-#     DO NOT CHANGE ANYTHING SECTION     #
-#                                        #
-##########################################
-
-Version: "1.6"
+  #Should the plugin print all lines of claims.yml to the console when it gets enabled
+  #Change to "false" to disable
+  #Default: "true"
+  doclaimsreadprint: "true"

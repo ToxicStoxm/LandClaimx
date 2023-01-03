@@ -2,13 +2,18 @@ package com.x_tornado10.landclaimx;
 
 import com.x_tornado10.landclaimx.commands.ClaimCommand;
 import com.x_tornado10.landclaimx.commands.ClaimCommandTabCompletion;
+import com.x_tornado10.landclaimx.dynmap.Dynmap;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.dynmap.DynmapCommonAPIListener;
 
+import javax.annotation.Nonnull;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 //MAIN CLASS
@@ -27,11 +32,16 @@ public final class LandClaimX extends JavaPlugin {
 
    }
 
+   @Override
+   public void onLoad() {
+
+
+
+   }
+
 
     @Override
     public void onEnable() {
-
-
 
         // Plugin startup logic
         Bukkit.getLogger().info(consoleprefix + "Welcome back!");
@@ -40,15 +50,17 @@ public final class LandClaimX extends JavaPlugin {
 
         if (Bukkit.getPluginManager().getPlugin("dynmap") == null) {
 
-            Bukkit.getLogger().warning(consoleprefix + "Dependencies: Plugin 'dynmap' wasn't found!");
-            Bukkit.getLogger().warning(consoleprefix + "Disabling plugin...");
+            Bukkit.getLogger().severe(consoleprefix + "Dependencies: Plugin 'dynmap' wasn't found!");
+            Bukkit.getLogger().severe(consoleprefix + "Disabling plugin...");
             Bukkit.getPluginManager().disablePlugin(this);
+            return;
 
         } else {
 
-            Bukkit.getLogger().warning(consoleprefix + "Dependencies: Plugin 'dynmap' was found and validated!");
+            Bukkit.getLogger().warning(consoleprefix + "Dependencies: Dynmap version " + Bukkit.getPluginManager().getPlugin("dynmap").getDescription().getVersion() + " was found and validated!");
 
         }
+
 
         //writing default config or reloading it if it exists
         saveDefaultConfig();
@@ -67,26 +79,51 @@ public final class LandClaimX extends JavaPlugin {
         Bukkit.getLogger().info(consoleprefix);
         Bukkit.getLogger().info(consoleprefix + "---------------------------------------------------------------------------------------------");
 
+        String doclaimsreadprint = null;
+
+        try {
+
+            reloadConfig();
+            doclaimsreadprint = getConfig().getString("Plugin.doclaimsreadprint");
+
+        } catch (Exception e) {
+
+            getConfig().set("Plugin.doclaimsreadprint", "true");
+
+        }
+
+        if (doclaimsreadprint.equals("false")) {
+
+            Bukkit.getLogger().info(consoleprefix + "ReadLog from file 'claims.yml' is disabled");
+            Bukkit.getLogger().info(consoleprefix + "To enable, it change 'doclaimsreadprint' to 'true' in 'config.yml'");
+
+        } else if (!doclaimsreadprint.equals("true")) {
+
+            getConfig().set("Plugin.doclaimsreadprint", "true");
+
+        }
+
 
         //triggering  the 'getHashMapFromTextFile' that reads the claims from the claims.yml file and puts them in to the HashMap 'chunks'
         this.chunks = new HashMap<>();
 
         Map<String, UUID> mapFromFile = getHashMapFromTextFile();
 
-        for(Map.Entry<String, UUID> entry : mapFromFile.entrySet()){
+        for (Map.Entry<String, UUID> entry : mapFromFile.entrySet()) {
 
-            try {
 
-                Bukkit.getLogger().info(consoleprefix + "Chunk: "+ entry.getKey() + " <==> " + "Owner: " + Bukkit.getPlayer(entry.getValue()).getName() + " <==> " + "UUID: " + entry.getValue());
+            if (doclaimsreadprint.equals("true")) {
 
-            } catch (Exception e){
+                try {
 
-                Bukkit.getLogger().info(consoleprefix + "Chunk: " + entry.getKey() + " <==> " + "Owner: " + Bukkit.getOfflinePlayer(entry.getValue()).getName() + " <==> " + "UUID: " + entry.getValue());
+                    Bukkit.getLogger().info(consoleprefix + "Chunk: " + entry.getKey() + " <==> " + "Owner: " + Bukkit.getPlayer(entry.getValue()).getName() + " <==> " + "UUID: " + entry.getValue());
 
+                } catch (Exception e) {
+
+                    Bukkit.getLogger().info(consoleprefix + "Chunk: " + entry.getKey() + " <==> " + "Owner: " + Bukkit.getOfflinePlayer(entry.getValue()).getName() + " <==> " + "UUID: " + entry.getValue());
+
+                }
             }
-
-
-
 
 
         }
@@ -98,10 +135,10 @@ public final class LandClaimX extends JavaPlugin {
         Bukkit.getLogger().info(consoleprefix + "Enabled!");
 
 
-
         //registering command '/claim' and TabCompletion for the '/claim' command
         getCommand("claim").setExecutor(new ClaimCommand(this));
         getCommand("claim").setTabCompleter(new ClaimCommandTabCompletion(this));
+        DynmapCommonAPIListener dynmapCommonAPIListener = new Dynmap();
 
     }
 
@@ -221,11 +258,11 @@ public final class LandClaimX extends JavaPlugin {
 
 
     //plugin information getting stored into strings to be used in messages
-    public String prefix = getConfig().getString("Plugin.prefix").toString();
-    public String consoleprefix = getConfig().getString("Plugin.consoleprefix").toString();
+    public String prefix = getConfig().getString("Plugin.prefix");
+    public String consoleprefix = getConfig().getString("Plugin.consoleprefix");
 
-    public String version = getConfig().getString("Version").toString();
-    public String author = "x_Tornado10";
+    public String version = this.getDescription().getVersion();
+    public String author = this.getDescription().getAuthors().get(0);
 
 
 
@@ -259,7 +296,7 @@ public final class LandClaimX extends JavaPlugin {
     //function for saving the configuration file
     public void save() {
 
-            saveConfig();
+            saveDefaultConfig();
 
     }
 
@@ -306,7 +343,6 @@ public final class LandClaimX extends JavaPlugin {
         Bukkit.getLogger().warning(errorprefix + "Please restart the server or open an Issue on GitHub: https://github.com/ToxicStoxm/LandClaimx/issues");
 
     }
-
 
 
 }

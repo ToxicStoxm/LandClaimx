@@ -1,7 +1,9 @@
 name: LandClaimX
 version: '${project.version}'
+author: x_Tornado10
 main: com.x_tornado10.landclaimx.LandClaimX
 api-version: 1.19
+depend: [ dynmap ]
 commands:
   claim:
     description: Lets sender claim current chunk.
