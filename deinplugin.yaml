@@ -1,0 +1,44 @@
+specVersion: 1
+type: plugin
+name: LandClaimX
+authors:
+  - x_Tornado10
+supportedPlatforms:
+  - spigot
+supportedGameVersions: ^1.19
+category: misc
+introduction:
+  en: A Simple Land claiming plugin for Bukkit/Spigot.
+description:
+  en: |
+    # Overview
+    Permissions:
+    landclaimx.*-----------------------------admin permission
+    landclaimx.claim-------------------------claim chunks
+    landclaimx.claim.owner-------------------see current chunk's owner
+    landclaimx.claim.overwrite---------------overwrite ownership of current chunk
+    landclaimx.claim.remove------------------remove claimed chunks owned by the sender
+    landclaimx.claim.remove_other------------remove claimed chunks owned by any player
+    landclaimx.claim.clear-------------------clear all chunk claims
+    landclaimx.claim.radius------------------claim chunks in a custom radius
+    
+    Commands:
+    /claim
+    /claim radius
+    /claim owner
+    /claim overwrite
+    /claim remove
+    /claim clear
+    /claim info
+    /claim help
+    
+    Alias:
+    /cl
+    
+    # Usage
+    Type '/claim help' in chat to get a description of what all the commands do.
+installation:
+  en: |
+    - Download the plugin-file
+    - Put the file into your plugins-folder
+    - Restart your server
