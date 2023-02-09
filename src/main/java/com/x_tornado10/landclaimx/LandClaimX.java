@@ -92,30 +92,24 @@ public final class LandClaimX extends JavaPlugin {
         Bukkit.getLogger().info(consoleprefix);
         Bukkit.getLogger().info(consoleprefix + "---------------------------------------------------------------------------------------------");
 
-        String doclaimsreadprint = null;
+        boolean doclaimsreadprint = true;
 
         try {
 
-            reloadConfig();
-            doclaimsreadprint = getConfig().getString("Plugin.doclaimsreadprint");
+            doclaimsreadprint = getConfig().getBoolean("Plugin.doclaimsreadprint");
 
         } catch (Exception e) {
 
-            getConfig().set("Plugin.doclaimsreadprint", "true");
+            getConfig().set("Plugin.doclaimsreadprint", true);
 
         }
 
-        if (doclaimsreadprint.equals("false")) {
+        if (!doclaimsreadprint) {
 
             Bukkit.getLogger().info(consoleprefix + "ReadLog from file 'claims.yml' is disabled");
             Bukkit.getLogger().info(consoleprefix + "To enable, it change 'doclaimsreadprint' to 'true' in 'config.yml'");
 
-        } else if (!doclaimsreadprint.equals("true")) {
-
-            getConfig().set("Plugin.doclaimsreadprint", "true");
-
         }
-
 
         //triggering  the 'getHashMapFromTextFile' that reads the claims from the claims.yml file and puts them in to the HashMap 'chunks'
         chunks = new HashMap<>();
@@ -125,7 +119,7 @@ public final class LandClaimX extends JavaPlugin {
         for (Map.Entry<String, UUID> entry : mapFromFile.entrySet()) {
 
 
-            if (doclaimsreadprint.equals("true")) {
+            if (doclaimsreadprint) {
 
                 try {
 
@@ -162,7 +156,6 @@ public final class LandClaimX extends JavaPlugin {
         //writing HashMap 'chunks' to claims.yml
         if (chunks != null) {
 
-            saveConfig();
             createclaims_yml();
 
             File file = new File(FilePath);
@@ -185,9 +178,6 @@ public final class LandClaimX extends JavaPlugin {
 
             }
         }
-
-        //triggering save function to save everything before the plugin gets disabled
-        save();
 
         //console log
         Bukkit.getLogger().info(consoleprefix + "Everthing saved!");
@@ -272,10 +262,17 @@ public final class LandClaimX extends JavaPlugin {
 
     }
 
-    //function for saving the configuration file
-    public void save() {
+    public void replaceChunk(String chunk, UUID owner) {
 
-            saveDefaultConfig();
+       if (chunks.get(chunk) != null) {
+
+           chunks.replace(chunk, owner);
+
+       } else {
+
+           chunks.put(chunk, owner);
+
+       }
 
     }
 

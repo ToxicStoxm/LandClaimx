@@ -7,6 +7,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +23,8 @@ public class ClaimCommand implements CommandExecutor {
         this.plugin = plugin;
     }
 
-    private boolean clear = false;
-    private boolean radius = false;
+    //private boolean clear = false;
+    //private boolean radius = false;
 
 
     @Override
@@ -36,6 +37,9 @@ public class ClaimCommand implements CommandExecutor {
             return true;
 
         } else {
+
+            //clear = false;
+            //radius = false;
 
             Player player = (Player) sender;
 
@@ -90,6 +94,13 @@ public class ClaimCommand implements CommandExecutor {
                 String perms_clear = "landclaimx.claim.clear";
                 String perms_radius = "landclaimx.claim.radius";
 
+                if (args.length >= 3) {
+
+                    msg(plugin.prefix + "You provided too many arguments!", player);
+                    return true;
+
+                }
+
                 if (args.length == 1) {
 
                     String perms_remove = "landclaimx.claim.remove";
@@ -97,6 +108,7 @@ public class ClaimCommand implements CommandExecutor {
                     switch (args[0].toLowerCase()) {
 
                         case "owner" -> {
+
                             if (perms(player, perms_owner)) {
 
                                 Chunk chunk = player.getLocation().getChunk();
@@ -111,19 +123,19 @@ public class ClaimCommand implements CommandExecutor {
                                 } else {
 
                                     //Putting information about the owner into strings
-                                    String owneruuid = plugin.getOwner(chunkID).toString();
+                                    UUID owneruuid = plugin.getOwner(chunkID);
 
                                     try {
 
-                                        String ownername = Objects.requireNonNull(Objects.requireNonNull(Bukkit.getPlayer(owneruuid)).getName());
+                                        String ownername = Bukkit.getPlayer(owneruuid).getName();
 
                                         //player feedback
                                         msg(plugin.prefix + "The owner of this chunk is: \n" + plugin.prefix + ownername, player);
 
 
-                                    } catch (Exception e) {
+                                    } catch (NullPointerException e) {
 
-                                        String ownername = Bukkit.getOfflinePlayer(plugin.getOwner(chunkID)).getName();
+                                        String ownername = Bukkit.getOfflinePlayer(owneruuid).getName();
 
                                         //player feedback
                                         msg(plugin.prefix + "The owner of this chunk is: \n" + plugin.prefix + ownername, player);
@@ -140,13 +152,14 @@ public class ClaimCommand implements CommandExecutor {
                         }
 
                         case "overwrite" -> {
+
                             if (perms(player, perms_overwrite)) {
 
                                 Chunk chunk = player.getLocation().getChunk();
 
                                 String chunkID = chunk.getX() + "," + chunk.getZ();
 
-                                plugin.addChunk(chunkID, player.getUniqueId());
+                                plugin.replaceChunk(chunkID, player.getUniqueId());
 
                                 //player feedback
                                 successclaim(player, false);
@@ -159,6 +172,7 @@ public class ClaimCommand implements CommandExecutor {
                         }
 
                         case "remove" -> {
+
                             if (perms(player, perms_remove)) {
 
                                 Chunk chunk = player.getLocation().getChunk();
@@ -185,7 +199,7 @@ public class ClaimCommand implements CommandExecutor {
 
                                         //removing chunk from HashMap 'chunks'
                                         plugin.removeChunk(chunkID, plugin.getOwner(chunkID));
-                                        msg(plugin.prefix + "Successfully unclaimd chunk!", player);
+                                        msg(plugin.prefix + "Successfully unclaimed chunk!", player);
 
 
                                     //check if the player tries to remove other players chunk claim without permission
@@ -244,13 +258,17 @@ public class ClaimCommand implements CommandExecutor {
 
                 if (args.length == 2) {
 
-                    switch (args[0].toLowerCase()) {
+                    /*switch (args[0].toLowerCase()) {
 
                         case "clear" :
 
                             if (perms(player, perms_clear)) {
 
                                 clear = true;
+
+                            } else {
+
+                                clear = false;
 
                             }
 
@@ -260,15 +278,27 @@ public class ClaimCommand implements CommandExecutor {
 
                                 radius = true;
 
+                            } else {
+
+                                radius = false;
+
                             }
 
                     }
+
+                     */
 
                     switch (args[1].toLowerCase()) {
 
                         case "confirm" -> {
 
-                            if (clear) {
+                            if (!args[0].toLowerCase().equals("clear")) {
+
+                                break;
+
+                            }
+
+                            //if (clear) {
 
                                 if (perms(player, perms_clear)) {
 
@@ -282,7 +312,7 @@ public class ClaimCommand implements CommandExecutor {
                                     //player feedback
                                     msg(plugin.prefix + "Process complete!", player);
                                     msg(plugin.prefix + "Successfully deleted all claimed chunks", player);
-                                    clear = false;
+                                    //clear = false;
 
                                 } else {
 
@@ -290,536 +320,563 @@ public class ClaimCommand implements CommandExecutor {
 
                                 }
 
-                            } else {
+                            /*} else {
 
                                 invalargs(player);
 
                             }
 
+                             */
+
                         }
 
                         case "1", "2", "3", "4", "5", "6", "7", "8" -> {
 
+                            if (!args[0].toLowerCase().equals("radius")) {
 
-                        if (radius) {
+                                break;
 
-                            if (perms(player, perms_radius)) {
+                            }
 
-                                int radius = Integer.parseInt(args[1]);
+                            //if (radius) {
 
-                                int chunkZ = player.getLocation().getChunk().getZ();
-                                int chunkX = player.getLocation().getChunk().getX();
+                                if (perms(player, perms_radius)) {
 
-                                Bukkit.getLogger().info(plugin.consoleprefix + "Calculating chunks...");
-                                msg(plugin.prefix + "Calculating chunks...", player);
+                                    int radius = Integer.parseInt(args[1]);
 
-                                int chunkXm1 = chunkX - 1;
-                                int chunkXp1 = chunkX + 1;
+                                    int chunkZ = player.getLocation().getChunk().getZ();
+                                    int chunkX = player.getLocation().getChunk().getX();
 
-                                int chunkZm1 = chunkZ - 1;
-                                int chunkZp1 = chunkZ + 1;
+                                    Bukkit.getLogger().info(plugin.consoleprefix + "Calculating chunks...");
+                                    msg(plugin.prefix + "Calculating chunks...", player);
 
+                                    int chunkXm1 = chunkX - 1;
+                                    int chunkXp1 = chunkX + 1;
 
-                                int chunkXm2 = chunkX - 2;
-                                int chunkXp2 = chunkX + 2;
+                                    int chunkZm1 = chunkZ - 1;
+                                    int chunkZp1 = chunkZ + 1;
 
-                                int chunkZm2 = chunkZ - 2;
-                                int chunkZp2 = chunkZ + 2;
 
+                                    int chunkXm2 = chunkX - 2;
+                                    int chunkXp2 = chunkX + 2;
 
-                                int chunkXm3 = chunkX - 3;
-                                int chunkXp3 = chunkX + 3;
+                                    int chunkZm2 = chunkZ - 2;
+                                    int chunkZp2 = chunkZ + 2;
 
-                                int chunkZm3 = chunkZ - 3;
-                                int chunkZp3 = chunkZ + 3;
 
+                                    int chunkXm3 = chunkX - 3;
+                                    int chunkXp3 = chunkX + 3;
 
-                                int chunkXm4 = chunkX - 4;
-                                int chunkXp4 = chunkX + 4;
+                                    int chunkZm3 = chunkZ - 3;
+                                    int chunkZp3 = chunkZ + 3;
 
-                                int chunkZm4 = chunkZ - 4;
-                                int chunkZp4 = chunkZ + 4;
 
+                                    int chunkXm4 = chunkX - 4;
+                                    int chunkXp4 = chunkX + 4;
 
-                                int chunkXm5 = chunkX - 5;
-                                int chunkXp5 = chunkX + 5;
+                                    int chunkZm4 = chunkZ - 4;
+                                    int chunkZp4 = chunkZ + 4;
 
-                                int chunkZm5 = chunkZ - 5;
-                                int chunkZp5 = chunkZ + 5;
 
+                                    int chunkXm5 = chunkX - 5;
+                                    int chunkXp5 = chunkX + 5;
 
-                                int chunkXm6 = chunkX - 6;
-                                int chunkXp6 = chunkX + 6;
+                                    int chunkZm5 = chunkZ - 5;
+                                    int chunkZp5 = chunkZ + 5;
 
-                                int chunkZm6 = chunkZ - 6;
-                                int chunkZp6 = chunkZ + 6;
 
+                                    int chunkXm6 = chunkX - 6;
+                                    int chunkXp6 = chunkX + 6;
 
-                                int chunkXm7 = chunkX - 7;
-                                int chunkXp7 = chunkX + 7;
+                                    int chunkZm6 = chunkZ - 6;
+                                    int chunkZp6 = chunkZ + 6;
 
-                                int chunkZm7 = chunkZ - 7;
-                                int chunkZp7 = chunkZ + 7;
 
-                                int chunkXm8 = chunkX - 8;
-                                int chunkXp8 = chunkX + 8;
+                                    int chunkXm7 = chunkX - 7;
+                                    int chunkXp7 = chunkX + 7;
 
-                                int chunkZm8 = chunkZ - 8;
-                                int chunkZp8 = chunkZ + 8;
+                                    int chunkZm7 = chunkZ - 7;
+                                    int chunkZp7 = chunkZ + 7;
 
-                                msg(plugin.prefix + "Please wait!", player);
+                                    int chunkXm8 = chunkX - 8;
+                                    int chunkXp8 = chunkX + 8;
 
+                                    int chunkZm8 = chunkZ - 8;
+                                    int chunkZp8 = chunkZ + 8;
 
-                                List<String> chunkID = new ArrayList<>();
+                                    msg(plugin.prefix + "Please wait!", player);
 
 
-                                //radius 1
-                                if (radiuschecker(radius, 1)) {
+                                    List<String> chunkID = new ArrayList<>();
 
-                                    chunkID.add(chunkX + "," + chunkZ);
-                                    chunkID.add(chunkXm1 + "," + chunkZ);
-                                    chunkID.add(chunkXm1 + "," + chunkZp1);
-                                    chunkID.add(chunkX + "," + chunkZp1);
-                                    chunkID.add(chunkXp1 + "," + chunkZp1);
-                                    chunkID.add(chunkXp1 + "," + chunkZ);
-                                    chunkID.add(chunkXp1 + "," + chunkZm1);
-                                    chunkID.add(chunkX + "," + chunkZm1);
-                                    chunkID.add(chunkXm1 + "," + chunkZm1);
 
-                                    //msg("Debug1", player);
+                                    //radius 1
+                                    if (radius >= 1) {
 
-                                }
+                                        chunkID.add(chunkX + "," + chunkZ);
+                                        chunkID.add(chunkXm1 + "," + chunkZ);
+                                        chunkID.add(chunkXm1 + "," + chunkZp1);
+                                        chunkID.add(chunkX + "," + chunkZp1);
+                                        chunkID.add(chunkXp1 + "," + chunkZp1);
+                                        chunkID.add(chunkXp1 + "," + chunkZ);
+                                        chunkID.add(chunkXp1 + "," + chunkZm1);
+                                        chunkID.add(chunkX + "," + chunkZm1);
+                                        chunkID.add(chunkXm1 + "," + chunkZm1);
 
-                                //radius 2
-                                if (radiuschecker(radius, 2)) {
+                                        //msg("Debug1", player);
+                                    }
 
-                                    chunkID.add(chunkXm2 + "," + chunkZ);
-                                    chunkID.add(chunkXm2 + "," + chunkZp1);
-                                    chunkID.add(chunkXm2 + "," + chunkZp2);
-                                    chunkID.add(chunkXm1 + "," + chunkZp2);
-                                    chunkID.add(chunkX + "," + chunkZp2);
-                                    chunkID.add(chunkXp1 + "," + chunkZp2);
-                                    chunkID.add(chunkXp2 + "," + chunkZp2);
-                                    chunkID.add(chunkXp2 + "," + chunkZp1);
-                                    chunkID.add(chunkXp2 + "," + chunkZ);
-                                    chunkID.add(chunkXp2 + "," + chunkZm1);
-                                    chunkID.add(chunkXp2 + "," + chunkZm2);
-                                    chunkID.add(chunkXp1 + "," + chunkZm2);
-                                    chunkID.add(chunkX + "," + chunkZm2);
-                                    chunkID.add(chunkXm1 + "," + chunkZm2);
-                                    chunkID.add(chunkXm2 + "," + chunkZm2);
-                                    chunkID.add(chunkXm2 + "," + chunkZm1);
-
-                                    //msg("Debug2", player);
-
-                                }
-
-                                //radius 3
-                                if (radiuschecker(radius, 3)) {
-
-                                    chunkID.add(chunkXm3 + "," + chunkZ);
-                                    chunkID.add(chunkXm3 + "," + chunkZp1);
-                                    chunkID.add(chunkXm3 + "," + chunkZp2);
-                                    chunkID.add(chunkXm3 + "," + chunkZp3);
-                                    chunkID.add(chunkXm2 + "," + chunkZp3);
-                                    chunkID.add(chunkXm1 + "," + chunkZp3);
-                                    chunkID.add(chunkX + "," + chunkZp3);
-                                    chunkID.add(chunkXp1 + "," + chunkZp3);
-                                    chunkID.add(chunkXp2 + "," + chunkZp3);
-                                    chunkID.add(chunkXp3 + "," + chunkZp3);
-                                    chunkID.add(chunkXp3 + "," + chunkZp2);
-                                    chunkID.add(chunkXp3 + "," + chunkZp1);
-                                    chunkID.add(chunkXp3 + "," + chunkZ);
-                                    chunkID.add(chunkXp3 + "," + chunkZm1);
-                                    chunkID.add(chunkXp3 + "," + chunkZm2);
-                                    chunkID.add(chunkXp3 + "," + chunkZm3);
-                                    chunkID.add(chunkXp2 + "," + chunkZm3);
-                                    chunkID.add(chunkXp1 + "," + chunkZm3);
-                                    chunkID.add(chunkX + "," + chunkZm3);
-                                    chunkID.add(chunkXm1 + "," + chunkZm3);
-                                    chunkID.add(chunkXm2 + "," + chunkZm3);
-                                    chunkID.add(chunkXm3 + "," + chunkZm3);
-                                    chunkID.add(chunkXm3 + "," + chunkZm2);
-                                    chunkID.add(chunkXm3 + "," + chunkZm1);
-
-                                    //msg("Debug3", player);
-
-                                }
-
-                                //radius 4
-                                if (radiuschecker(radius, 4)) {
-
-                                    chunkID.add(chunkXm4 + "," + chunkZ);
-                                    chunkID.add(chunkXm4 + "," + chunkZp1);
-                                    chunkID.add(chunkXm4 + "," + chunkZp2);
-                                    chunkID.add(chunkXm4 + "," + chunkZp3);
-                                    chunkID.add(chunkXm4 + "," + chunkZp4);
-                                    chunkID.add(chunkXm3 + "," + chunkZp4);
-                                    chunkID.add(chunkXm2 + "," + chunkZp4);
-                                    chunkID.add(chunkXm1 + "," + chunkZp4);
-                                    chunkID.add(chunkX + "," + chunkZp4);
-                                    chunkID.add(chunkXp1 + "," + chunkZp4);
-                                    chunkID.add(chunkXp2 + "," + chunkZp4);
-                                    chunkID.add(chunkXp3 + "," + chunkZp4);
-                                    chunkID.add(chunkXp4 + "," + chunkZp4);
-                                    chunkID.add(chunkXp4 + "," + chunkZp3);
-                                    chunkID.add(chunkXp4 + "," + chunkZp2);
-                                    chunkID.add(chunkXp4 + "," + chunkZp1);
-                                    chunkID.add(chunkXp4 + "," + chunkZ);
-                                    chunkID.add(chunkXp4 + "," + chunkZm1);
-                                    chunkID.add(chunkXp4 + "," + chunkZm2);
-                                    chunkID.add(chunkXp4 + "," + chunkZm3);
-                                    chunkID.add(chunkXp4 + "," + chunkZm4);
-                                    chunkID.add(chunkXp3 + "," + chunkZm4);
-                                    chunkID.add(chunkXp2 + "," + chunkZm4);
-                                    chunkID.add(chunkXp1 + "," + chunkZm4);
-                                    chunkID.add(chunkX + "," + chunkZm4);
-                                    chunkID.add(chunkXm1 + "," + chunkZm4);
-                                    chunkID.add(chunkXm2 + "," + chunkZm4);
-                                    chunkID.add(chunkXm3 + "," + chunkZm4);
-                                    chunkID.add(chunkXm4 + "," + chunkZm4);
-                                    chunkID.add(chunkXm4 + "," + chunkZm3);
-                                    chunkID.add(chunkXm4 + "," + chunkZm2);
-                                    chunkID.add(chunkXm4 + "," + chunkZm1);
-
-                                    //msg("Debug4", player);
-
-                                }
-
-                                //radius 5
-                                if (radiuschecker(radius, 5)) {
-
-                                    chunkID.add(chunkXm5 + "," + chunkZ);
-                                    chunkID.add(chunkXm5 + "," + chunkZp1);
-                                    chunkID.add(chunkXm5 + "," + chunkZp2);
-                                    chunkID.add(chunkXm5 + "," + chunkZp3);
-                                    chunkID.add(chunkXm5 + "," + chunkZp4);
-                                    chunkID.add(chunkXm5 + "," + chunkZp5);
-                                    chunkID.add(chunkXm4 + "," + chunkZp5);
-                                    chunkID.add(chunkXm3 + "," + chunkZp5);
-                                    chunkID.add(chunkXm2 + "," + chunkZp5);
-                                    chunkID.add(chunkXm1 + "," + chunkZp5);
-                                    chunkID.add(chunkX + "," + chunkZp5);
-                                    chunkID.add(chunkXp1 + "," + chunkZp5);
-                                    chunkID.add(chunkXp2 + "," + chunkZp5);
-                                    chunkID.add(chunkXp3 + "," + chunkZp5);
-                                    chunkID.add(chunkXp4 + "," + chunkZp5);
-                                    chunkID.add(chunkXp5 + "," + chunkZp5);
-                                    chunkID.add(chunkXp5 + "," + chunkZp4);
-                                    chunkID.add(chunkXp5 + "," + chunkZp3);
-                                    chunkID.add(chunkXp5 + "," + chunkZp2);
-                                    chunkID.add(chunkXp5 + "," + chunkZp1);
-                                    chunkID.add(chunkXp5 + "," + chunkZ);
-                                    chunkID.add(chunkXp5 + "," + chunkZm1);
-                                    chunkID.add(chunkXp5 + "," + chunkZm2);
-                                    chunkID.add(chunkXp5 + "," + chunkZm3);
-                                    chunkID.add(chunkXp5 + "," + chunkZm4);
-                                    chunkID.add(chunkXp5 + "," + chunkZm5);
-                                    chunkID.add(chunkXp4 + "," + chunkZm5);
-                                    chunkID.add(chunkXp3 + "," + chunkZm5);
-                                    chunkID.add(chunkXp2 + "," + chunkZm5);
-                                    chunkID.add(chunkXp1 + "," + chunkZm5);
-                                    chunkID.add(chunkX + "," + chunkZm5);
-                                    chunkID.add(chunkXm1 + "," + chunkZm5);
-                                    chunkID.add(chunkXm2 + "," + chunkZm5);
-                                    chunkID.add(chunkXm3 + "," + chunkZm5);
-                                    chunkID.add(chunkXm4 + "," + chunkZm5);
-                                    chunkID.add(chunkXm5 + "," + chunkZm5);
-                                    chunkID.add(chunkXm5 + "," + chunkZm4);
-                                    chunkID.add(chunkXm5 + "," + chunkZm3);
-                                    chunkID.add(chunkXm5 + "," + chunkZm2);
-                                    chunkID.add(chunkXm5 + "," + chunkZm1);
-
-                                    //msg("Debug5", player);
-
-                                }
-
-                                //radius 6
-                                if (radiuschecker(radius, 6)) {
-
-                                    chunkID.add(chunkXm6 + "," + chunkZ);
-                                    chunkID.add(chunkXm6 + "," + chunkZp1);
-                                    chunkID.add(chunkXm6 + "," + chunkZp2);
-                                    chunkID.add(chunkXm6 + "," + chunkZp3);
-                                    chunkID.add(chunkXm6 + "," + chunkZp4);
-                                    chunkID.add(chunkXm6 + "," + chunkZp5);
-                                    chunkID.add(chunkXm6 + "," + chunkZp6);
-                                    chunkID.add(chunkXm5 + "," + chunkZp6);
-                                    chunkID.add(chunkXm4 + "," + chunkZp6);
-                                    chunkID.add(chunkXm3 + "," + chunkZp6);
-                                    chunkID.add(chunkXm2 + "," + chunkZp6);
-                                    chunkID.add(chunkXm1 + "," + chunkZp6);
-                                    chunkID.add(chunkX + "," + chunkZp6);
-                                    chunkID.add(chunkXp1 + "," + chunkZp6);
-                                    chunkID.add(chunkXp2 + "," + chunkZp6);
-                                    chunkID.add(chunkXp3 + "," + chunkZp6);
-                                    chunkID.add(chunkXp4 + "," + chunkZp6);
-                                    chunkID.add(chunkXp5 + "," + chunkZp6);
-                                    chunkID.add(chunkXp6 + "," + chunkZp6);
-                                    chunkID.add(chunkXp6 + "," + chunkZp5);
-                                    chunkID.add(chunkXp6 + "," + chunkZp4);
-                                    chunkID.add(chunkXp6 + "," + chunkZp3);
-                                    chunkID.add(chunkXp6 + "," + chunkZp2);
-                                    chunkID.add(chunkXp6 + "," + chunkZp1);
-                                    chunkID.add(chunkXp6 + "," + chunkZ);
-                                    chunkID.add(chunkXp6 + "," + chunkZm1);
-                                    chunkID.add(chunkXp6 + "," + chunkZm2);
-                                    chunkID.add(chunkXp6 + "," + chunkZm3);
-                                    chunkID.add(chunkXp6 + "," + chunkZm4);
-                                    chunkID.add(chunkXp6 + "," + chunkZm5);
-                                    chunkID.add(chunkXp6 + "," + chunkZm6);
-                                    chunkID.add(chunkXp5 + "," + chunkZm6);
-                                    chunkID.add(chunkXp4 + "," + chunkZm6);
-                                    chunkID.add(chunkXp3 + "," + chunkZm6);
-                                    chunkID.add(chunkXp2 + "," + chunkZm6);
-                                    chunkID.add(chunkXp1 + "," + chunkZm6);
-                                    chunkID.add(chunkX + "," + chunkZm6);
-                                    chunkID.add(chunkXm1 + "," + chunkZm6);
-                                    chunkID.add(chunkXm2 + "," + chunkZm6);
-                                    chunkID.add(chunkXm3 + "," + chunkZm6);
-                                    chunkID.add(chunkXm4 + "," + chunkZm6);
-                                    chunkID.add(chunkXm5 + "," + chunkZm6);
-                                    chunkID.add(chunkXm6 + "," + chunkZm6);
-                                    chunkID.add(chunkXm6 + "," + chunkZm5);
-                                    chunkID.add(chunkXm6 + "," + chunkZm4);
-                                    chunkID.add(chunkXm6 + "," + chunkZm3);
-                                    chunkID.add(chunkXm6 + "," + chunkZm2);
-                                    chunkID.add(chunkXm6 + "," + chunkZm1);
-
-                                    //msg("Debug6", player);
-
-                                }
-
-                                //radius 7
-                                if (radiuschecker(radius, 7)) {
-
-                                    chunkID.add(chunkXm7 + "," + chunkZp1);
-                                    chunkID.add(chunkXm7 + "," + chunkZp2);
-                                    chunkID.add(chunkXm7 + "," + chunkZp3);
-                                    chunkID.add(chunkXm7 + "," + chunkZp4);
-                                    chunkID.add(chunkXm7 + "," + chunkZp5);
-                                    chunkID.add(chunkXm7 + "," + chunkZp6);
-                                    chunkID.add(chunkXm7 + "," + chunkZp7);
-                                    chunkID.add(chunkXm7 + "," + chunkZp7);
-                                    chunkID.add(chunkXm6 + "," + chunkZp7);
-                                    chunkID.add(chunkXm5 + "," + chunkZp7);
-                                    chunkID.add(chunkXm4 + "," + chunkZp7);
-                                    chunkID.add(chunkXm3 + "," + chunkZp7);
-                                    chunkID.add(chunkXm2 + "," + chunkZp7);
-                                    chunkID.add(chunkXm1 + "," + chunkZp7);
-                                    chunkID.add(chunkX + "," + chunkZp7);
-                                    chunkID.add(chunkXp1 + "," + chunkZp7);
-                                    chunkID.add(chunkXp2 + "," + chunkZp7);
-                                    chunkID.add(chunkXp3 + "," + chunkZp7);
-                                    chunkID.add(chunkXp4 + "," + chunkZp7);
-                                    chunkID.add(chunkXp5 + "," + chunkZp7);
-                                    chunkID.add(chunkXp6 + "," + chunkZp7);
-                                    chunkID.add(chunkXp7 + "," + chunkZp6);
-                                    chunkID.add(chunkXp7 + "," + chunkZp5);
-                                    chunkID.add(chunkXp7 + "," + chunkZp4);
-                                    chunkID.add(chunkXp7 + "," + chunkZp3);
-                                    chunkID.add(chunkXp7 + "," + chunkZp2);
-                                    chunkID.add(chunkXp7 + "," + chunkZp1);
-                                    chunkID.add(chunkXp7 + "," + chunkZ);
-                                    chunkID.add(chunkXp7 + "," + chunkZm1);
-                                    chunkID.add(chunkXp7 + "," + chunkZm2);
-                                    chunkID.add(chunkXp7 + "," + chunkZm3);
-                                    chunkID.add(chunkXp7 + "," + chunkZm4);
-                                    chunkID.add(chunkXp7 + "," + chunkZm5);
-                                    chunkID.add(chunkXp7 + "," + chunkZm6);
-                                    chunkID.add(chunkXp7 + "," + chunkZm7);
-                                    chunkID.add(chunkXp7 + "," + chunkZm7);
-                                    chunkID.add(chunkXp6 + "," + chunkZm7);
-                                    chunkID.add(chunkXp5 + "," + chunkZm7);
-                                    chunkID.add(chunkXp4 + "," + chunkZm7);
-                                    chunkID.add(chunkXp3 + "," + chunkZm7);
-                                    chunkID.add(chunkXp2 + "," + chunkZm7);
-                                    chunkID.add(chunkXp1 + "," + chunkZm7);
-                                    chunkID.add(chunkX + "," + chunkZm7);
-                                    chunkID.add(chunkXm1 + "," + chunkZm7);
-                                    chunkID.add(chunkXm2 + "," + chunkZm7);
-                                    chunkID.add(chunkXm3 + "," + chunkZm7);
-                                    chunkID.add(chunkXm4 + "," + chunkZm7);
-                                    chunkID.add(chunkXm5 + "," + chunkZm7);
-                                    chunkID.add(chunkXm6 + "," + chunkZm7);
-                                    chunkID.add(chunkXm7 + "," + chunkZm6);
-                                    chunkID.add(chunkXm7 + "," + chunkZm5);
-                                    chunkID.add(chunkXm7 + "," + chunkZm4);
-                                    chunkID.add(chunkXm7 + "," + chunkZm3);
-                                    chunkID.add(chunkXm7 + "," + chunkZm2);
-                                    chunkID.add(chunkXm7 + "," + chunkZm1);
-                                    chunkID.add(chunkXm7 + "," + chunkZ);
-
-                                    //msg("Debug7", player);
-
-                                }
-
-                                //radius 8
-                                if (radiuschecker(radius, 8)) {
-
-                                    chunkID.add(chunkXm8 + "," + chunkZ);
-                                    chunkID.add(chunkXm8 + "," + chunkZp1);
-                                    chunkID.add(chunkXm8 + "," + chunkZp2);
-                                    chunkID.add(chunkXm8 + "," + chunkZp3);
-                                    chunkID.add(chunkXm8 + "," + chunkZp4);
-                                    chunkID.add(chunkXm8 + "," + chunkZp5);
-                                    chunkID.add(chunkXm8 + "," + chunkZp6);
-                                    chunkID.add(chunkXm8 + "," + chunkZp7);
-                                    chunkID.add(chunkXm8 + "," + chunkZp8);
-                                    chunkID.add(chunkXm7 + "," + chunkZp8);
-                                    chunkID.add(chunkXm6 + "," + chunkZp8);
-                                    chunkID.add(chunkXm5 + "," + chunkZp8);
-                                    chunkID.add(chunkXm4 + "," + chunkZp8);
-                                    chunkID.add(chunkXm3 + "," + chunkZp8);
-                                    chunkID.add(chunkXm2 + "," + chunkZp8);
-                                    chunkID.add(chunkXm1 + "," + chunkZp8);
-                                    chunkID.add(chunkX + "," + chunkZp8);
-                                    chunkID.add(chunkXp1 + "," + chunkZp8);
-                                    chunkID.add(chunkXp2 + "," + chunkZp8);
-                                    chunkID.add(chunkXp3 + "," + chunkZp8);
-                                    chunkID.add(chunkXp4 + "," + chunkZp8);
-                                    chunkID.add(chunkXp5 + "," + chunkZp8);
-                                    chunkID.add(chunkXp6 + "," + chunkZp8);
-                                    chunkID.add(chunkXp7 + "," + chunkZp8);
-                                    chunkID.add(chunkXp8 + "," + chunkZp8);
-                                    chunkID.add(chunkXp8 + "," + chunkZp7);
-                                    chunkID.add(chunkXp8 + "," + chunkZp6);
-                                    chunkID.add(chunkXp8 + "," + chunkZp5);
-                                    chunkID.add(chunkXp8 + "," + chunkZp4);
-                                    chunkID.add(chunkXp8 + "," + chunkZp3);
-                                    chunkID.add(chunkXp8 + "," + chunkZp2);
-                                    chunkID.add(chunkXp8 + "," + chunkZp1);
-                                    chunkID.add(chunkXp8 + "," + chunkZ);
-                                    chunkID.add(chunkXp8 + "," + chunkZm1);
-                                    chunkID.add(chunkXp8 + "," + chunkZm2);
-                                    chunkID.add(chunkXp8 + "," + chunkZm3);
-                                    chunkID.add(chunkXp8 + "," + chunkZm4);
-                                    chunkID.add(chunkXp8 + "," + chunkZm5);
-                                    chunkID.add(chunkXp8 + "," + chunkZm6);
-                                    chunkID.add(chunkXp8 + "," + chunkZm7);
-                                    chunkID.add(chunkXp8 + "," + chunkZm8);
-                                    chunkID.add(chunkXp7 + "," + chunkZm8);
-                                    chunkID.add(chunkXp6 + "," + chunkZm8);
-                                    chunkID.add(chunkXp5 + "," + chunkZm8);
-                                    chunkID.add(chunkXp4 + "," + chunkZm8);
-                                    chunkID.add(chunkXp3 + "," + chunkZm8);
-                                    chunkID.add(chunkXp2 + "," + chunkZm8);
-                                    chunkID.add(chunkXp1 + "," + chunkZm8);
-                                    chunkID.add(chunkX + "," + chunkZm8);
-                                    chunkID.add(chunkXm1 + "," + chunkZm8);
-                                    chunkID.add(chunkXm2 + "," + chunkZm8);
-                                    chunkID.add(chunkXm3 + "," + chunkZm8);
-                                    chunkID.add(chunkXm4 + "," + chunkZm8);
-                                    chunkID.add(chunkXm5 + "," + chunkZm8);
-                                    chunkID.add(chunkXm6 + "," + chunkZm8);
-                                    chunkID.add(chunkXm7 + "," + chunkZm8);
-                                    chunkID.add(chunkXm8 + "," + chunkZm8);
-                                    chunkID.add(chunkXm8 + "," + chunkZm7);
-                                    chunkID.add(chunkXm8 + "," + chunkZm6);
-                                    chunkID.add(chunkXm8 + "," + chunkZm5);
-                                    chunkID.add(chunkXm8 + "," + chunkZm4);
-                                    chunkID.add(chunkXm8 + "," + chunkZm3);
-                                    chunkID.add(chunkXm8 + "," + chunkZm2);
-                                    chunkID.add(chunkXm8 + "," + chunkZm1);
-
-                                    //msg("Debug8", player);
-
-                                }
-
-
-                                Bukkit.getLogger().info(plugin.consoleprefix + "Done!");
-
-                                UUID owner = player.getUniqueId();
-
-                                int i = chunkID.size() - 1;
-
-
-                                while (i > -1) {
-
-                                    if (!plugin.isChunk(chunkID.get(i))) {
-
-                                        plugin.addChunk(chunkID.get(i), owner);
-
-                                    } else {
-
-                                        if (player.hasPermission(plugin.perms_overwrite) && !plugin.getOwner(chunkID.get(i)).equals(player.getUniqueId())) {
+                                    //radius 2
+                                    if (radius >= 2) {
+
+                                        chunkID.add(chunkXm2 + "," + chunkZ);
+                                        chunkID.add(chunkXm2 + "," + chunkZp1);
+                                        chunkID.add(chunkXm2 + "," + chunkZp2);
+                                        chunkID.add(chunkXm1 + "," + chunkZp2);
+                                        chunkID.add(chunkX + "," + chunkZp2);
+                                        chunkID.add(chunkXp1 + "," + chunkZp2);
+                                        chunkID.add(chunkXp2 + "," + chunkZp2);
+                                        chunkID.add(chunkXp2 + "," + chunkZp1);
+                                        chunkID.add(chunkXp2 + "," + chunkZ);
+                                        chunkID.add(chunkXp2 + "," + chunkZm1);
+                                        chunkID.add(chunkXp2 + "," + chunkZm2);
+                                        chunkID.add(chunkXp1 + "," + chunkZm2);
+                                        chunkID.add(chunkX + "," + chunkZm2);
+                                        chunkID.add(chunkXm1 + "," + chunkZm2);
+                                        chunkID.add(chunkXm2 + "," + chunkZm2);
+                                        chunkID.add(chunkXm2 + "," + chunkZm1);
+
+                                        //msg("Debug2", player);
+
+                                    }
+
+                                    //radius 3
+                                    if (radius >= 3) {
+
+                                        chunkID.add(chunkXm3 + "," + chunkZ);
+                                        chunkID.add(chunkXm3 + "," + chunkZp1);
+                                        chunkID.add(chunkXm3 + "," + chunkZp2);
+                                        chunkID.add(chunkXm3 + "," + chunkZp3);
+                                        chunkID.add(chunkXm2 + "," + chunkZp3);
+                                        chunkID.add(chunkXm1 + "," + chunkZp3);
+                                        chunkID.add(chunkX + "," + chunkZp3);
+                                        chunkID.add(chunkXp1 + "," + chunkZp3);
+                                        chunkID.add(chunkXp2 + "," + chunkZp3);
+                                        chunkID.add(chunkXp3 + "," + chunkZp3);
+                                        chunkID.add(chunkXp3 + "," + chunkZp2);
+                                        chunkID.add(chunkXp3 + "," + chunkZp1);
+                                        chunkID.add(chunkXp3 + "," + chunkZ);
+                                        chunkID.add(chunkXp3 + "," + chunkZm1);
+                                        chunkID.add(chunkXp3 + "," + chunkZm2);
+                                        chunkID.add(chunkXp3 + "," + chunkZm3);
+                                        chunkID.add(chunkXp2 + "," + chunkZm3);
+                                        chunkID.add(chunkXp1 + "," + chunkZm3);
+                                        chunkID.add(chunkX + "," + chunkZm3);
+                                        chunkID.add(chunkXm1 + "," + chunkZm3);
+                                        chunkID.add(chunkXm2 + "," + chunkZm3);
+                                        chunkID.add(chunkXm3 + "," + chunkZm3);
+                                        chunkID.add(chunkXm3 + "," + chunkZm2);
+                                        chunkID.add(chunkXm3 + "," + chunkZm1);
+
+                                        //msg("Debug3", player);
+
+                                    }
+
+
+                                    //radius 4
+                                    if (radius >= 4) {
+
+                                        chunkID.add(chunkXm4 + "," + chunkZ);
+                                        chunkID.add(chunkXm4 + "," + chunkZp1);
+                                        chunkID.add(chunkXm4 + "," + chunkZp2);
+                                        chunkID.add(chunkXm4 + "," + chunkZp3);
+                                        chunkID.add(chunkXm4 + "," + chunkZp4);
+                                        chunkID.add(chunkXm3 + "," + chunkZp4);
+                                        chunkID.add(chunkXm2 + "," + chunkZp4);
+                                        chunkID.add(chunkXm1 + "," + chunkZp4);
+                                        chunkID.add(chunkX + "," + chunkZp4);
+                                        chunkID.add(chunkXp1 + "," + chunkZp4);
+                                        chunkID.add(chunkXp2 + "," + chunkZp4);
+                                        chunkID.add(chunkXp3 + "," + chunkZp4);
+                                        chunkID.add(chunkXp4 + "," + chunkZp4);
+                                        chunkID.add(chunkXp4 + "," + chunkZp3);
+                                        chunkID.add(chunkXp4 + "," + chunkZp2);
+                                        chunkID.add(chunkXp4 + "," + chunkZp1);
+                                        chunkID.add(chunkXp4 + "," + chunkZ);
+                                        chunkID.add(chunkXp4 + "," + chunkZm1);
+                                        chunkID.add(chunkXp4 + "," + chunkZm2);
+                                        chunkID.add(chunkXp4 + "," + chunkZm3);
+                                        chunkID.add(chunkXp4 + "," + chunkZm4);
+                                        chunkID.add(chunkXp3 + "," + chunkZm4);
+                                        chunkID.add(chunkXp2 + "," + chunkZm4);
+                                        chunkID.add(chunkXp1 + "," + chunkZm4);
+                                        chunkID.add(chunkX + "," + chunkZm4);
+                                        chunkID.add(chunkXm1 + "," + chunkZm4);
+                                        chunkID.add(chunkXm2 + "," + chunkZm4);
+                                        chunkID.add(chunkXm3 + "," + chunkZm4);
+                                        chunkID.add(chunkXm4 + "," + chunkZm4);
+                                        chunkID.add(chunkXm4 + "," + chunkZm3);
+                                        chunkID.add(chunkXm4 + "," + chunkZm2);
+                                        chunkID.add(chunkXm4 + "," + chunkZm1);
+
+                                        //msg("Debug4", player);
+
+                                    }
+
+                                    //radius 5
+                                    if (radius >= 5) {
+
+                                        chunkID.add(chunkXm5 + "," + chunkZ);
+                                        chunkID.add(chunkXm5 + "," + chunkZp1);
+                                        chunkID.add(chunkXm5 + "," + chunkZp2);
+                                        chunkID.add(chunkXm5 + "," + chunkZp3);
+                                        chunkID.add(chunkXm5 + "," + chunkZp4);
+                                        chunkID.add(chunkXm5 + "," + chunkZp5);
+                                        chunkID.add(chunkXm4 + "," + chunkZp5);
+                                        chunkID.add(chunkXm3 + "," + chunkZp5);
+                                        chunkID.add(chunkXm2 + "," + chunkZp5);
+                                        chunkID.add(chunkXm1 + "," + chunkZp5);
+                                        chunkID.add(chunkX + "," + chunkZp5);
+                                        chunkID.add(chunkXp1 + "," + chunkZp5);
+                                        chunkID.add(chunkXp2 + "," + chunkZp5);
+                                        chunkID.add(chunkXp3 + "," + chunkZp5);
+                                        chunkID.add(chunkXp4 + "," + chunkZp5);
+                                        chunkID.add(chunkXp5 + "," + chunkZp5);
+                                        chunkID.add(chunkXp5 + "," + chunkZp4);
+                                        chunkID.add(chunkXp5 + "," + chunkZp3);
+                                        chunkID.add(chunkXp5 + "," + chunkZp2);
+                                        chunkID.add(chunkXp5 + "," + chunkZp1);
+                                        chunkID.add(chunkXp5 + "," + chunkZ);
+                                        chunkID.add(chunkXp5 + "," + chunkZm1);
+                                        chunkID.add(chunkXp5 + "," + chunkZm2);
+                                        chunkID.add(chunkXp5 + "," + chunkZm3);
+                                        chunkID.add(chunkXp5 + "," + chunkZm4);
+                                        chunkID.add(chunkXp5 + "," + chunkZm5);
+                                        chunkID.add(chunkXp4 + "," + chunkZm5);
+                                        chunkID.add(chunkXp3 + "," + chunkZm5);
+                                        chunkID.add(chunkXp2 + "," + chunkZm5);
+                                        chunkID.add(chunkXp1 + "," + chunkZm5);
+                                        chunkID.add(chunkX + "," + chunkZm5);
+                                        chunkID.add(chunkXm1 + "," + chunkZm5);
+                                        chunkID.add(chunkXm2 + "," + chunkZm5);
+                                        chunkID.add(chunkXm3 + "," + chunkZm5);
+                                        chunkID.add(chunkXm4 + "," + chunkZm5);
+                                        chunkID.add(chunkXm5 + "," + chunkZm5);
+                                        chunkID.add(chunkXm5 + "," + chunkZm4);
+                                        chunkID.add(chunkXm5 + "," + chunkZm3);
+                                        chunkID.add(chunkXm5 + "," + chunkZm2);
+                                        chunkID.add(chunkXm5 + "," + chunkZm1);
+
+                                        //msg("Debug5", player);
+
+                                    }
+
+                                    //radius 6
+                                    if (radius >= 6) {
+
+                                        chunkID.add(chunkXm6 + "," + chunkZ);
+                                        chunkID.add(chunkXm6 + "," + chunkZp1);
+                                        chunkID.add(chunkXm6 + "," + chunkZp2);
+                                        chunkID.add(chunkXm6 + "," + chunkZp3);
+                                        chunkID.add(chunkXm6 + "," + chunkZp4);
+                                        chunkID.add(chunkXm6 + "," + chunkZp5);
+                                        chunkID.add(chunkXm6 + "," + chunkZp6);
+                                        chunkID.add(chunkXm5 + "," + chunkZp6);
+                                        chunkID.add(chunkXm4 + "," + chunkZp6);
+                                        chunkID.add(chunkXm3 + "," + chunkZp6);
+                                        chunkID.add(chunkXm2 + "," + chunkZp6);
+                                        chunkID.add(chunkXm1 + "," + chunkZp6);
+                                        chunkID.add(chunkX + "," + chunkZp6);
+                                        chunkID.add(chunkXp1 + "," + chunkZp6);
+                                        chunkID.add(chunkXp2 + "," + chunkZp6);
+                                        chunkID.add(chunkXp3 + "," + chunkZp6);
+                                        chunkID.add(chunkXp4 + "," + chunkZp6);
+                                        chunkID.add(chunkXp5 + "," + chunkZp6);
+                                        chunkID.add(chunkXp6 + "," + chunkZp6);
+                                        chunkID.add(chunkXp6 + "," + chunkZp5);
+                                        chunkID.add(chunkXp6 + "," + chunkZp4);
+                                        chunkID.add(chunkXp6 + "," + chunkZp3);
+                                        chunkID.add(chunkXp6 + "," + chunkZp2);
+                                        chunkID.add(chunkXp6 + "," + chunkZp1);
+                                        chunkID.add(chunkXp6 + "," + chunkZ);
+                                        chunkID.add(chunkXp6 + "," + chunkZm1);
+                                        chunkID.add(chunkXp6 + "," + chunkZm2);
+                                        chunkID.add(chunkXp6 + "," + chunkZm3);
+                                        chunkID.add(chunkXp6 + "," + chunkZm4);
+                                        chunkID.add(chunkXp6 + "," + chunkZm5);
+                                        chunkID.add(chunkXp6 + "," + chunkZm6);
+                                        chunkID.add(chunkXp5 + "," + chunkZm6);
+                                        chunkID.add(chunkXp4 + "," + chunkZm6);
+                                        chunkID.add(chunkXp3 + "," + chunkZm6);
+                                        chunkID.add(chunkXp2 + "," + chunkZm6);
+                                        chunkID.add(chunkXp1 + "," + chunkZm6);
+                                        chunkID.add(chunkX + "," + chunkZm6);
+                                        chunkID.add(chunkXm1 + "," + chunkZm6);
+                                        chunkID.add(chunkXm2 + "," + chunkZm6);
+                                        chunkID.add(chunkXm3 + "," + chunkZm6);
+                                        chunkID.add(chunkXm4 + "," + chunkZm6);
+                                        chunkID.add(chunkXm5 + "," + chunkZm6);
+                                        chunkID.add(chunkXm6 + "," + chunkZm6);
+                                        chunkID.add(chunkXm6 + "," + chunkZm5);
+                                        chunkID.add(chunkXm6 + "," + chunkZm4);
+                                        chunkID.add(chunkXm6 + "," + chunkZm3);
+                                        chunkID.add(chunkXm6 + "," + chunkZm2);
+                                        chunkID.add(chunkXm6 + "," + chunkZm1);
+
+                                        //msg("Debug6", player);
+
+                                    }
+
+                                    //radius 7
+                                    if (radius >= 7) {
+
+                                        chunkID.add(chunkXm7 + "," + chunkZp1);
+                                        chunkID.add(chunkXm7 + "," + chunkZp2);
+                                        chunkID.add(chunkXm7 + "," + chunkZp3);
+                                        chunkID.add(chunkXm7 + "," + chunkZp4);
+                                        chunkID.add(chunkXm7 + "," + chunkZp5);
+                                        chunkID.add(chunkXm7 + "," + chunkZp6);
+                                        chunkID.add(chunkXm7 + "," + chunkZp7);
+                                        chunkID.add(chunkXm7 + "," + chunkZp7);
+                                        chunkID.add(chunkXm6 + "," + chunkZp7);
+                                        chunkID.add(chunkXm5 + "," + chunkZp7);
+                                        chunkID.add(chunkXm4 + "," + chunkZp7);
+                                        chunkID.add(chunkXm3 + "," + chunkZp7);
+                                        chunkID.add(chunkXm2 + "," + chunkZp7);
+                                        chunkID.add(chunkXm1 + "," + chunkZp7);
+                                        chunkID.add(chunkX + "," + chunkZp7);
+                                        chunkID.add(chunkXp1 + "," + chunkZp7);
+                                        chunkID.add(chunkXp2 + "," + chunkZp7);
+                                        chunkID.add(chunkXp3 + "," + chunkZp7);
+                                        chunkID.add(chunkXp4 + "," + chunkZp7);
+                                        chunkID.add(chunkXp5 + "," + chunkZp7);
+                                        chunkID.add(chunkXp6 + "," + chunkZp7);
+                                        chunkID.add(chunkXp7 + "," + chunkZp6);
+                                        chunkID.add(chunkXp7 + "," + chunkZp5);
+                                        chunkID.add(chunkXp7 + "," + chunkZp4);
+                                        chunkID.add(chunkXp7 + "," + chunkZp3);
+                                        chunkID.add(chunkXp7 + "," + chunkZp2);
+                                        chunkID.add(chunkXp7 + "," + chunkZp1);
+                                        chunkID.add(chunkXp7 + "," + chunkZ);
+                                        chunkID.add(chunkXp7 + "," + chunkZm1);
+                                        chunkID.add(chunkXp7 + "," + chunkZm2);
+                                        chunkID.add(chunkXp7 + "," + chunkZm3);
+                                        chunkID.add(chunkXp7 + "," + chunkZm4);
+                                        chunkID.add(chunkXp7 + "," + chunkZm5);
+                                        chunkID.add(chunkXp7 + "," + chunkZm6);
+                                        chunkID.add(chunkXp7 + "," + chunkZm7);
+                                        chunkID.add(chunkXp7 + "," + chunkZm7);
+                                        chunkID.add(chunkXp6 + "," + chunkZm7);
+                                        chunkID.add(chunkXp5 + "," + chunkZm7);
+                                        chunkID.add(chunkXp4 + "," + chunkZm7);
+                                        chunkID.add(chunkXp3 + "," + chunkZm7);
+                                        chunkID.add(chunkXp2 + "," + chunkZm7);
+                                        chunkID.add(chunkXp1 + "," + chunkZm7);
+                                        chunkID.add(chunkX + "," + chunkZm7);
+                                        chunkID.add(chunkXm1 + "," + chunkZm7);
+                                        chunkID.add(chunkXm2 + "," + chunkZm7);
+                                        chunkID.add(chunkXm3 + "," + chunkZm7);
+                                        chunkID.add(chunkXm4 + "," + chunkZm7);
+                                        chunkID.add(chunkXm5 + "," + chunkZm7);
+                                        chunkID.add(chunkXm6 + "," + chunkZm7);
+                                        chunkID.add(chunkXm7 + "," + chunkZm6);
+                                        chunkID.add(chunkXm7 + "," + chunkZm5);
+                                        chunkID.add(chunkXm7 + "," + chunkZm4);
+                                        chunkID.add(chunkXm7 + "," + chunkZm3);
+                                        chunkID.add(chunkXm7 + "," + chunkZm2);
+                                        chunkID.add(chunkXm7 + "," + chunkZm1);
+                                        chunkID.add(chunkXm7 + "," + chunkZ);
+
+                                        //msg("Debug7", player);
+
+                                    }
+
+                                    //radius 8
+                                    if (radius >= 8) {
+
+                                        chunkID.add(chunkXm8 + "," + chunkZ);
+                                        chunkID.add(chunkXm8 + "," + chunkZp1);
+                                        chunkID.add(chunkXm8 + "," + chunkZp2);
+                                        chunkID.add(chunkXm8 + "," + chunkZp3);
+                                        chunkID.add(chunkXm8 + "," + chunkZp4);
+                                        chunkID.add(chunkXm8 + "," + chunkZp5);
+                                        chunkID.add(chunkXm8 + "," + chunkZp6);
+                                        chunkID.add(chunkXm8 + "," + chunkZp7);
+                                        chunkID.add(chunkXm8 + "," + chunkZp8);
+                                        chunkID.add(chunkXm7 + "," + chunkZp8);
+                                        chunkID.add(chunkXm6 + "," + chunkZp8);
+                                        chunkID.add(chunkXm5 + "," + chunkZp8);
+                                        chunkID.add(chunkXm4 + "," + chunkZp8);
+                                        chunkID.add(chunkXm3 + "," + chunkZp8);
+                                        chunkID.add(chunkXm2 + "," + chunkZp8);
+                                        chunkID.add(chunkXm1 + "," + chunkZp8);
+                                        chunkID.add(chunkX + "," + chunkZp8);
+                                        chunkID.add(chunkXp1 + "," + chunkZp8);
+                                        chunkID.add(chunkXp2 + "," + chunkZp8);
+                                        chunkID.add(chunkXp3 + "," + chunkZp8);
+                                        chunkID.add(chunkXp4 + "," + chunkZp8);
+                                        chunkID.add(chunkXp5 + "," + chunkZp8);
+                                        chunkID.add(chunkXp6 + "," + chunkZp8);
+                                        chunkID.add(chunkXp7 + "," + chunkZp8);
+                                        chunkID.add(chunkXp8 + "," + chunkZp8);
+                                        chunkID.add(chunkXp8 + "," + chunkZp7);
+                                        chunkID.add(chunkXp8 + "," + chunkZp6);
+                                        chunkID.add(chunkXp8 + "," + chunkZp5);
+                                        chunkID.add(chunkXp8 + "," + chunkZp4);
+                                        chunkID.add(chunkXp8 + "," + chunkZp3);
+                                        chunkID.add(chunkXp8 + "," + chunkZp2);
+                                        chunkID.add(chunkXp8 + "," + chunkZp1);
+                                        chunkID.add(chunkXp8 + "," + chunkZ);
+                                        chunkID.add(chunkXp8 + "," + chunkZm1);
+                                        chunkID.add(chunkXp8 + "," + chunkZm2);
+                                        chunkID.add(chunkXp8 + "," + chunkZm3);
+                                        chunkID.add(chunkXp8 + "," + chunkZm4);
+                                        chunkID.add(chunkXp8 + "," + chunkZm5);
+                                        chunkID.add(chunkXp8 + "," + chunkZm6);
+                                        chunkID.add(chunkXp8 + "," + chunkZm7);
+                                        chunkID.add(chunkXp8 + "," + chunkZm8);
+                                        chunkID.add(chunkXp7 + "," + chunkZm8);
+                                        chunkID.add(chunkXp6 + "," + chunkZm8);
+                                        chunkID.add(chunkXp5 + "," + chunkZm8);
+                                        chunkID.add(chunkXp4 + "," + chunkZm8);
+                                        chunkID.add(chunkXp3 + "," + chunkZm8);
+                                        chunkID.add(chunkXp2 + "," + chunkZm8);
+                                        chunkID.add(chunkXp1 + "," + chunkZm8);
+                                        chunkID.add(chunkX + "," + chunkZm8);
+                                        chunkID.add(chunkXm1 + "," + chunkZm8);
+                                        chunkID.add(chunkXm2 + "," + chunkZm8);
+                                        chunkID.add(chunkXm3 + "," + chunkZm8);
+                                        chunkID.add(chunkXm4 + "," + chunkZm8);
+                                        chunkID.add(chunkXm5 + "," + chunkZm8);
+                                        chunkID.add(chunkXm6 + "," + chunkZm8);
+                                        chunkID.add(chunkXm7 + "," + chunkZm8);
+                                        chunkID.add(chunkXm8 + "," + chunkZm8);
+                                        chunkID.add(chunkXm8 + "," + chunkZm7);
+                                        chunkID.add(chunkXm8 + "," + chunkZm6);
+                                        chunkID.add(chunkXm8 + "," + chunkZm5);
+                                        chunkID.add(chunkXm8 + "," + chunkZm4);
+                                        chunkID.add(chunkXm8 + "," + chunkZm3);
+                                        chunkID.add(chunkXm8 + "," + chunkZm2);
+                                        chunkID.add(chunkXm8 + "," + chunkZm1);
+
+                                        //msg("Debug8", player);
+
+                                    }
+
+
+                                    Bukkit.getLogger().info(plugin.consoleprefix + "Done!");
+
+                                    UUID owner = player.getUniqueId();
+
+                                    int i = chunkID.size() - 1;
+
+                                    ArrayList<Integer> ochunks = new ArrayList<>();
+                                    List<UUID> u = new ArrayList<>();
+
+                                    while (i > -1) {
+
+                                        if (!plugin.isChunk(chunkID.get(i))) {
 
                                             plugin.addChunk(chunkID.get(i), owner);
 
+                                        } else {
+
+                                            if (!plugin.getOwner(chunkID.get(i)).equals(player.getUniqueId())) {
+
+                                                if (player.hasPermission(plugin.perms_overwrite)) {
+
+                                                    plugin.addChunk(chunkID.get(i), owner);
+
+                                                }
+
+                                                ochunks.add(i);
+                                                u.add(plugin.getOwner(chunkID.get(i)));
+
+                                            }
                                         }
-                                    }
 
 
-                                    List<UUID> u = new ArrayList<>();
+                                        if (i == 0) {
 
-                                    u.add(plugin.getOwner(chunkID.get(i)));
+                                            List<String> owners = new ArrayList<>();
 
-
-                                    if (i == 0) {
-
-                                        List<String> owners = new ArrayList<>();
-
-                                        int in = u.size() - 1;
+                                            int in = u.size() - 1;
 
 
-                                        while (in > -1) {
+                                            while (in > -1) {
 
-                                            try {
+                                                try {
 
-                                                owners.add(Objects.requireNonNull(Bukkit.getPlayer(u.get(in))).getName());
+                                                    if (!owners.contains(Bukkit.getPlayer(u.get(in)).getName())) {
 
-                                            } catch (Exception e) {
+                                                        owners.add(Objects.requireNonNull(Bukkit.getPlayer(u.get(in))).getName());
 
-                                                owners.add(Bukkit.getOfflinePlayer(u.get(in)).getName());
+                                                    }
+
+                                                } catch (Exception e) {
+
+                                                    if (!owners.contains(Bukkit.getOfflinePlayer(u.get(in)).getName())) {
+
+                                                        owners.add(Bukkit.getOfflinePlayer(u.get(in)).getName());
+
+                                                    }
+
+                                                }
+
+                                                in = in - 1;
 
                                             }
 
-                                            in = in - 1;
+                                            //if (!plugin.getOwner(chunkID.get(i)).equals(player.getUniqueId())) {
 
-                                        }
+                                            if (!ochunks.isEmpty()) {
 
-                                        if (!plugin.getOwner(chunkID.get(i)).equals(player.getUniqueId())) {
+                                                if (player.hasPermission(plugin.perms_overwrite)) {
 
+                                                    msg(plugin.prefix + "Your selected area overlaps with chunks claimed by other players " + owners + "\n" + plugin.prefix + "Overwriting because needed permissions are given...", player);
+                                                    successclaim(player, true);
 
-                                            if (player.hasPermission(plugin.perms_overwrite)) {
+                                                } else {
 
-                                                msg(plugin.prefix + "Your selected area overlaps with chunks claimed by other players " + owners + "\n" + plugin.prefix + "Overwriting because needed permissions are given...", player);
-                                                successclaim(player, true);
+                                                    msg(plugin.prefix + "Your selected area overlaps with chunks claimed by other players " + owners + "\n" + plugin.prefix + "Reduce the radius of the command or type '/claim help' for more info!", player);
+
+                                                }
 
                                             } else {
 
-                                                msg(plugin.prefix + "Your selected area overlaps with chunks claimed by other players " + owners + "\n" + plugin.prefix + "Reduce the radius of the command or type '/claim help' for more info!", player);
+                                                successclaim(player, true);
 
                                             }
 
-                                        } else {
-                                            successclaim(player, true);
+
+                                            u.clear();
+                                            owners.clear();
+                                            ochunks.clear();
+                                            chunkID.clear();
+                                            //this.radius = false;
 
                                         }
 
 
-                                        u.clear();
-                                        owners.clear();
-                                        this.radius = false;
+                                        i = i - 1;
 
                                     }
 
 
-                                    i = i - 1;
+                                } else {
+
+                                    noperms(player);
 
                                 }
-
-
-                            } else {
-
-                                noperms(player);
-
-                            }
-                        } else {
+                          /*  } else {
 
                             invalargs(player);
 
+
+
                         }
+
+                           */
                     }
 
 
@@ -828,13 +885,6 @@ public class ClaimCommand implements CommandExecutor {
                             invalargs(player);
 
                     }
-                }
-
-                if (args.length >= 3) {
-
-                    msg(plugin.prefix + "You provided too many arguments!", player);
-                    return true;
-
                 }
 
             }
