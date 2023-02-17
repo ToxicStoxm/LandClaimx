@@ -21,3 +21,5 @@ Plugin:
   #Change to "false" to disable
   #Default: "true"
   doclaimsreadprint: "true"
+  #The world that the plugin allows the '/claim' command to be used
+  worldname: "world"

@@ -43,6 +43,13 @@ public class ClaimCommand implements CommandExecutor {
 
             Player player = (Player) sender;
 
+            if(!player.getLocation().getWorld().getName().equals(plugin.getWorldname())) {
+
+                player.sendMessage(plugin.prefix + "You are not allowed to use '/claim' in this dimension!");
+                return true;
+
+            }
+
             String perms_claim = "landclaimx.claim";
 
             if (perms(player, perms_claim)) {

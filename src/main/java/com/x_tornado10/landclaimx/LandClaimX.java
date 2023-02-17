@@ -41,6 +41,8 @@ public final class LandClaimX extends JavaPlugin {
     public String perms_owner = "landclaimx.claim.owner";
     public String perms_overwrite = "landclaimx.claim.overwrite";
 
+    private  String worldname;
+
     public static String errorprefix = "[LandClaimXERROR] ";
 
 
@@ -137,6 +139,23 @@ public final class LandClaimX extends JavaPlugin {
         Bukkit.getLogger().info(consoleprefix + "---------------------------------------------------------------------------------------------");
         Bukkit.getLogger().info(consoleprefix);
         Bukkit.getLogger().info(consoleprefix + "Loaded claims.yml");
+
+        try {
+
+            worldname = getConfig().getString("Plugin.worldname");
+
+        } catch (Exception e) {
+
+            Bukkit.getLogger().severe("Could not get 'worldname' form config.yml! The Plugin wont work if this message appears!");
+            Bukkit.getPluginManager().disablePlugin(this);
+
+        }
+
+        if (worldname == null || worldname.isBlank()) {
+
+            worldname = Bukkit.getWorlds().get(0).getName();
+
+        }
 
         getCommand("claim").setExecutor(new ClaimCommand(this));
         getCommand("claim").setTabCompleter(new ClaimCommandTabCompletion());
@@ -347,5 +366,8 @@ public final class LandClaimX extends JavaPlugin {
 
     }
 
+    public String getWorldname() {
+        return worldname;
+    }
 
 }
