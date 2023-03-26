@@ -15,8 +15,8 @@ landclaimx.claim.radius------------------claim chunks in a custom radius
 
 1.LandClaimX\config.yml  
       Main configuration file  
-            -Plugin Prefix  
-            -Console Prefix  
+            -Change if you want to have debug-log for all claims.
+            -World in wich the '/claim' command can be used
 
 2. LandClaimX\data\claims.yml  
     Storage for all saved claims  
