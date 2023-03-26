@@ -4,6 +4,7 @@ author: x_Tornado10
 main: com.x_tornado10.landclaimx.LandClaimX
 api-version: 1.19
 depend: [ dynmap ]
+prefix: "LandClaimX"
 commands:
   claim:
     description: Lets sender claim current chunk.
