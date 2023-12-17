@@ -34,4 +34,4 @@ Please let me know if you find any bug.
 I'm making this plugin mostly for private porpouse but if you have any cool suggestions let me know!
 
 ## Help
-If you need help join my Discord: <https://discord.gg/CcUe6KghYq>
+If you need help join my Discord: ```Link Invalid```
